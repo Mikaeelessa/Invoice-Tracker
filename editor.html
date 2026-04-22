@@ -3519,7 +3519,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       </ol>
     </div>
 
-    <div id="syncStatus" style="font-size:13px;min-height:20px;margin-bottom:14px;display:none;padding:10px 14px;border-radius:8px;"></div>
+    <div id="syncStatus" style="font-size: 13px; min-height: 20px; margin-bottom: 14px; display: block; padding: 10px 14px; border-radius: 8px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); color: var(--red);">❌ Could not find invoice data in the published file. Publish from the dashboard first.</div>
 
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('syncModal')">Cancel</button>
@@ -3605,13 +3605,23 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
     </div>
 
     <div id="publishProgress" style="margin-bottom: 18px; display: block;">
-      <div style="display:flex;flex-direction:column;gap:10px;" id="publishSteps"><div style="font-size: 13px; display: flex; align-items: center; gap: 8px;"><span>✅</span><span>index.html ready ✓</span></div><div style="font-size: 13px; display: flex; align-items: center; gap: 8px;"><span>✅</span><span>Stakeholder Viewer published ✓</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;" id="publishSteps"></div>
     </div>
 
-    <div id="publishResult" style="display:none;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+    <div id="publishResult" style="display: none; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.25); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;">
       <div style="font-weight:700;color:var(--green);margin-bottom:6px;">✅ Published successfully!</div>
       <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">GitHub Pages will update within 30–60 seconds.</div>
-      <div style="display:flex;flex-direction:column;gap:6px;" id="publishedUrls"></div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="publishedUrls">
+    <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+      <span style="font-size:12px;font-weight:600;color:var(--muted);min-width:160px;">👁 Stakeholder Viewer</span>
+      <a href="https://Mikaeelessa.github.io/Invoice-Tracker/" target="_blank" style="color:var(--accent);font-size:13px;font-weight:600;text-decoration:none;">https://Mikaeelessa.github.io/Invoice-Tracker/</a>
+      <button class="btn btn-outline btn-xs" onclick="navigator.clipboard.writeText('https://Mikaeelessa.github.io/Invoice-Tracker/');showToast('📋 Copied!','https://Mikaeelessa.github.io/Invoice-Tracker/')">📋</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+      <span style="font-size:12px;font-weight:600;color:var(--muted);min-width:160px;">✏️ Editor Dashboard</span>
+      <a href="https://Mikaeelessa.github.io/Invoice-Tracker/editor.html" target="_blank" style="color:var(--accent);font-size:13px;font-weight:600;text-decoration:none;">https://Mikaeelessa.github.io/Invoice-Tracker/editor.html</a>
+      <button class="btn btn-outline btn-xs" onclick="navigator.clipboard.writeText('https://Mikaeelessa.github.io/Invoice-Tracker/editor.html');showToast('📋 Copied!','https://Mikaeelessa.github.io/Invoice-Tracker/editor.html')">📋</button>
+    </div></div>
     </div>
 
     <div id="publishError" style="display:none;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
@@ -3688,7 +3698,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"><div class="t-title" id="toastTitle"></div><div id="toastMsg"></div></div>
+<div class="toast" id="toast"><div class="t-title" id="toastTitle">📋 Copied!</div><div id="toastMsg">https://Mikaeelessa.github.io/Invoice-Tracker/editor.html</div></div>
 
 <script>
 // ─── SEED DATA ───────────────────────────────────────────────────────────────
