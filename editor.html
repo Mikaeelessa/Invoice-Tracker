@@ -321,16 +321,17 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 .ai-char-count{font-size:11px;color:var(--muted);padding:4px 0;}
 
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script>
+<script>
 (function(){
-  var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3';
+  var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3',AU='https://script.google.com/macros/s/AKfycbxWRw_l4EFTvcIaPFEhea1uTlssOCjcg7sd5iwyug0h8qJRb1-RFsS3XLIeGHxXv5-_8A/exec';
   var existing=localStorage.getItem(SD);
   var parsed=existing?JSON.parse(existing):null;
-  // Only seed if localStorage is empty or older version
   if(!parsed||parsed.version!==SV){
     localStorage.setItem(SD,JSON.stringify({version:SV,data:[{"id":300,"invoice":"INV-0717","invoice_date":"2026-02-20","due_date":"2026-02-23","client":"Puma Energy South Africa","reference":"Diesel Tanks","value":1207500,"paid":false,"amount_due":1207500,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":301,"invoice":"INV-1010","invoice_date":"2026-05-05","due_date":"2026-05-11","client":"Pamish Investments (Nasonti)","reference":"NSTEP002","value":1480713,"paid":false,"amount_due":1480713,"overdue":0,"comment":"AMOUNT STILL OWING","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":302,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":303,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":304,"invoice":"INV-1050","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPSER076 (80%)","value":7261447.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8400.7},{"id":305,"invoice":"INV-1051","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPWAL012 (20%)","value":2010004.1,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":306,"invoice":"INV-1052","invoice_date":"2026-06-25","due_date":"2026-06-25","client":"Foresight","reference":"RMPBLK084 (10%)","value":25119.71,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":307,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMAFEBLK01","value":7933653.54,"paid":false,"amount_due":7933653.54,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8302},{"id":308,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMKFTAFE01","value":9344793.51,"paid":false,"amount_due":9344793.51,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8307},{"id":309,"invoice":"To be invoiced","invoice_date":"2026-06-29","due_date":"2026-07-03","client":"Grinco","reference":"RMPBLK085 (80%)","value":7800000,"paid":false,"amount_due":7800000,"overdue":0,"comment":"Awaiting release","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0}],saved:new Date().toISOString()}));
     localStorage.setItem(SC,JSON.stringify([]));
   }
+  // Always bake in the API URL so setup screen is skipped
+  if(AU) localStorage.setItem('trade_payments_api_url', AU);
 })();
 </script></head>
 <body>
@@ -403,7 +404,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
   <div class="unpaid-box" id="unpaidBox">
     <div class="unpaid-box-header">
       <h2>🚨 Overdue &amp; Unpaid Invoices</h2>
-      <span id="unpaid-last-updated" style="font-size:11px;color:var(--muted);margin-left:auto;">Updated: 09:24</span>
+      <span id="unpaid-last-updated" style="font-size:11px;color:var(--muted);margin-left:auto;">Updated: 09:42</span>
       <div style="display:flex;gap:6px;align-items:center;margin-left:12px;">
         <button class="btn btn-outline btn-xs" onclick="resizeUnpaidPanel(200)" title="Compact">▲ Compact</button>
         <button class="btn btn-outline btn-xs" onclick="resizeUnpaidPanel(500)" title="Larger">↕ Larger</button>
@@ -686,14 +687,14 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 
   <!-- ADD INVOICE PANEL -->
   <div class="add-panel" id="addPanel">
-    <div class="add-panel-header open" id="addPanelHeader" onclick="toggleAddPanel()">
+    <div class="add-panel-header" id="addPanelHeader" onclick="toggleAddPanel()">
       <h3>➕ Add New Invoice</h3>
       <span style="font-size:12px;color:var(--muted);margin-right:8px;">Click to expand</span>
       <span class="chevron">▼</span>
     </div>
-    <div class="add-panel-body open" id="addPanelBody">
+    <div class="add-panel-body" id="addPanelBody">
       <div class="form-grid">
-        <div class="field"><label>Invoice Number</label><input type="text" id="f-invoice" placeholder="INV-0999" data-manually-edited=""></div>
+        <div class="field"><label>Invoice Number</label><input type="text" id="f-invoice" placeholder="INV-0999"></div>
         <div class="field"><label>Client</label>
           <select id="f-client">
             <option value="">— Select or type below —</option>
@@ -704,21 +705,21 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
             <option>Trafigura</option><option>Umsimbithi Mining</option><option value="__new__">+ Add new client…</option>
           </select>
         </div>
-        <div class="field" id="newClientField" style="display: none;"><label>New Client Name</label><input type="text" id="f-client-new" placeholder="Enter client name" data-manually-edited=""></div>
-        <div class="field"><label>Reference</label><input type="text" id="f-reference" placeholder="RMPIPP001" data-manually-edited=""></div>
-        <div class="field"><label>Invoice Date</label><input type="date" id="f-invoice-date" data-manually-edited=""></div>
-        <div class="field"><label>Due Date</label><input type="date" id="f-due-date" data-manually-edited=""></div>
+        <div class="field" id="newClientField" style="display:none"><label>New Client Name</label><input type="text" id="f-client-new" placeholder="Enter client name"></div>
+        <div class="field"><label>Reference</label><input type="text" id="f-reference" placeholder="RMPIPP001"></div>
+        <div class="field"><label>Invoice Date</label><input type="date" id="f-invoice-date"></div>
+        <div class="field"><label>Due Date</label><input type="date" id="f-due-date"></div>
         <div class="field" style="grid-column:span 2;">
           <label>Invoice Value (ZAR) <span style="font-weight:400;color:var(--muted);font-size:10px;">VAT @ 15%</span></label>
           <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;">
             <div>
               <div style="font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;">Excl. VAT</div>
-              <input type="number" id="f-value-excl" placeholder="0.00" step="0.01" style="width:100%;" oninput="vatCalc('excl','f')" data-manually-edited="">
+              <input type="number" id="f-value-excl" placeholder="0.00" step="0.01" style="width:100%;" oninput="vatCalc('excl','f')">
             </div>
             <div style="text-align:center;color:var(--muted);font-size:12px;padding-top:16px;">→</div>
             <div>
               <div style="font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;">Incl. VAT <span style="color:#7ab3ff;">(saved)</span></div>
-              <input type="number" id="f-value" placeholder="0.00" step="0.01" style="width:100%;border-color:rgba(79,124,255,0.4);" oninput="vatCalc('incl','f'); syncAmountDue()" data-manually-edited="">
+              <input type="number" id="f-value" placeholder="0.00" step="0.01" style="width:100%;border-color:rgba(79,124,255,0.4);" oninput="vatCalc('incl','f'); syncAmountDue()">
             </div>
           </div>
         </div>
@@ -730,15 +731,15 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
         </div>
       </div>
       <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
-        <div class="field"><label>Amount Still Due (ZAR) <span style="font-weight:400;color:var(--muted);font-size:10px;">auto-fills from value</span></label><input type="number" id="f-amount-due" placeholder="0.00" step="0.01" data-manually-edited=""></div>
-        <div class="field"><label>Overdue Amount (ZAR)</label><input type="number" id="f-overdue" placeholder="0.00" step="0.01" data-manually-edited=""></div>
-        <div class="field"><label>Comment / Notes</label><input type="text" id="f-comment" placeholder="e.g. Paid 31/03/2026, FX rate noted..." data-manually-edited=""></div>
+        <div class="field"><label>Amount Still Due (ZAR) <span style="font-weight:400;color:var(--muted);font-size:10px;">auto-fills from value</span></label><input type="number" id="f-amount-due" placeholder="0.00" step="0.01"></div>
+        <div class="field"><label>Overdue Amount (ZAR)</label><input type="number" id="f-overdue" placeholder="0.00" step="0.01"></div>
+        <div class="field"><label>Comment / Notes</label><input type="text" id="f-comment" placeholder="e.g. Paid 31/03/2026, FX rate noted..."></div>
       </div>
       <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr 1fr;">
-        <div class="field"><label>Contract Number</label><input type="text" id="f-contract" placeholder="e.g. TGA COM 001" data-manually-edited=""></div>
-        <div class="field"><label>Contract Total Tons</label><input type="number" id="f-contract-tons-total" placeholder="e.g. 100000" step="1" data-manually-edited=""></div>
-        <div class="field"><label>Tons Delivered to Date</label><input type="number" id="f-contract-tons-delivered" placeholder="e.g. 75000" step="1" data-manually-edited=""></div>
-        <div class="field"><label>Tons on This Invoice</label><input type="number" id="f-invoice-tons" placeholder="e.g. 8500" step="1" data-manually-edited=""></div>
+        <div class="field"><label>Contract Number</label><input type="text" id="f-contract" placeholder="e.g. TGA COM 001"></div>
+        <div class="field"><label>Contract Total Tons</label><input type="number" id="f-contract-tons-total" placeholder="e.g. 100000" step="1"></div>
+        <div class="field"><label>Tons Delivered to Date</label><input type="number" id="f-contract-tons-delivered" placeholder="e.g. 75000" step="1"></div>
+        <div class="field"><label>Tons on This Invoice</label><input type="number" id="f-invoice-tons" placeholder="e.g. 8500" step="1"></div>
       </div>
       <div class="form-actions">
         <button class="btn btn-primary" onclick="addInvoice()">✅ Add Invoice</button>
@@ -1073,67 +1074,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 
       <!-- Invoice rows — pre-populated, each with a note field -->
       <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;margin-bottom:8px;">Invoices — add a note to include in the summary</div>
-      <div id="summaryInvoiceRows" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;padding-right:4px;margin-bottom:18px;"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;font-weight:600;margin-top:10px;margin-bottom:4px;">🚨 Overdue &amp; Due Today</div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--red);">
-      <div>
-        <div style="font-size:12px;font-weight:700;">Puma Energy South Africa</div>
-        <div style="font-size:11px;color:var(--muted);font-family:monospace;">INV-0717</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:600;">ZAR 1&nbsp;207&nbsp;500</div>
-        <div style="font-size:11px;color:var(--red);font-weight:600;">126d overdue</div>
-      </div>
-      <input type="text" data-id="300" data-client="Puma Energy South Africa" data-inv="INV-0717" data-val="ZAR 1&nbsp;207&nbsp;500" data-due="2026/02/23" data-days="126d overdue" data-group="overdue" value="" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(300,this.value);rebuildSummaryPreview()">
-    </div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--red);">
-      <div>
-        <div style="font-size:12px;font-weight:700;">Pamish Investments (Nasonti)</div>
-        <div style="font-size:11px;color:var(--muted);font-family:monospace;">INV-1010</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:600;">ZAR 1&nbsp;480&nbsp;713</div>
-        <div style="font-size:11px;color:var(--red);font-weight:600;">49d overdue</div>
-      </div>
-      <input type="text" data-id="301" data-client="Pamish Investments (Nasonti)" data-inv="INV-1010" data-val="ZAR 1&nbsp;480&nbsp;713" data-due="2026/05/11" data-days="49d overdue" data-group="overdue" value="AMOUNT STILL OWING" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(301,this.value);rebuildSummaryPreview()">
-    </div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--red);">
-      <div>
-        <div style="font-size:12px;font-weight:700;">Pamish Investments (Nasonti)</div>
-        <div style="font-size:11px;color:var(--muted);font-family:monospace;">INV-1035</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:600;">ZAR 8&nbsp;636&nbsp;914</div>
-        <div style="font-size:11px;color:var(--red);font-weight:600;">10d overdue</div>
-      </div>
-      <input type="text" data-id="302" data-client="Pamish Investments (Nasonti)" data-inv="INV-1035" data-val="ZAR 8&nbsp;636&nbsp;914" data-due="2026/06/19" data-days="10d overdue" data-group="overdue" value="" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(302,this.value);rebuildSummaryPreview()">
-    </div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;font-weight:600;margin-top:10px;margin-bottom:4px;">⏰ Due Within 14 Days</div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--amber);">
-      <div>
-        <div style="font-size:12px;font-weight:700;">Grinco</div>
-        <div style="font-size:11px;color:var(--muted);font-family:monospace;">RMPBLK085 (80%)</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:600;">ZAR 7&nbsp;800&nbsp;000</div>
-        <div style="font-size:11px;color:var(--amber);font-weight:600;">Due 2026/07/03</div>
-      </div>
-      <input type="text" data-id="309" data-client="Grinco" data-inv="RMPBLK085 (80%)" data-val="ZAR 7&nbsp;800&nbsp;000" data-due="2026/07/03" data-days="Due 2026/07/03" data-group="due-soon" value="Awaiting release" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(309,this.value);rebuildSummaryPreview()">
-    </div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--amber);">
-      <div>
-        <div style="font-size:12px;font-weight:700;">Thungela</div>
-        <div style="font-size:11px;color:var(--muted);font-family:monospace;">CMAFEBLK01</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:600;">ZAR 7&nbsp;933&nbsp;654</div>
-        <div style="font-size:11px;color:var(--amber);font-weight:600;">Due 2026/07/08</div>
-      </div>
-      <input type="text" data-id="307" data-client="Thungela" data-inv="CMAFEBLK01" data-val="ZAR 7&nbsp;933&nbsp;654" data-due="2026/07/08" data-days="Due 2026/07/08" data-group="due-soon" value="" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(307,this.value);rebuildSummaryPreview()">
-    </div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--amber);">
-      <div>
-        <div style="font-size:12px;font-weight:700;">Thungela</div>
-        <div style="font-size:11px;color:var(--muted);font-family:monospace;">CMKFTAFE01</div>
-      </div>
-      <div>
-        <div style="font-size:12px;font-weight:600;">ZAR 9&nbsp;344&nbsp;794</div>
-        <div style="font-size:11px;color:var(--amber);font-weight:600;">Due 2026/07/08</div>
-      </div>
-      <input type="text" data-id="308" data-client="Thungela" data-inv="CMKFTAFE01" data-val="ZAR 9&nbsp;344&nbsp;794" data-due="2026/07/08" data-days="Due 2026/07/08" data-group="due-soon" value="" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(308,this.value);rebuildSummaryPreview()">
-    </div></div>
+      <div id="summaryInvoiceRows" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;padding-right:4px;margin-bottom:18px;"></div>
 
       <!-- Preview -->
       <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;margin-bottom:6px;">Preview</div>
@@ -1428,7 +1369,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"><div class="t-title" id="toastTitle">📋 Copied!</div><div id="toastMsg">Paste into WhatsApp, Teams or email.</div></div>
+<div class="toast" id="toast"><div class="t-title" id="toastTitle"></div><div id="toastMsg"></div></div>
 
 <script>
 // ─── SEED DATA ───────────────────────────────────────────────────────────────
@@ -3188,32 +3129,39 @@ async function runPublish(cfg, mode) {
 }
 
 function buildEditorHTML() {
-  // Returns the current dashboard file with live DATA + CONTRACTS baked into the SEED
-  // so anyone opening editor.html starts with the current data
   const src = document.documentElement.outerHTML;
-  const dataJson = JSON.stringify(DATA);
+  const dataJson      = JSON.stringify(DATA);
   const contractsJson = JSON.stringify(CONTRACTS);
+  const bakedApiUrl   = API_URL || '';  // bake the live sync URL in
 
-  // Replace the SEED constant and CONTRACTS seed in the source
-  let out = src.replace(/const SEED\s*=\s*\[[\s\S]*?\];/, `const SEED = ${dataJson};`);
-  out = out.replace(/let CONTRACTS\s*=\s*\[\s*\];/, `let CONTRACTS = [];`);
+  let out = src;
 
-  // Inject a startup script that pre-loads localStorage with current data
-  // so new users get the latest data on first open
+  // Bake latest data into SEED
+  out = out.replace(/const SEED\s*=\s*\[[\s\S]*?\];/, `const SEED = ${dataJson};`);
+
+  // Bake the API URL in so the setup screen never shows for teammates
+  // Replace the init block's localStorage check with a hardcoded URL
+  out = out.replace(
+    "const API_STORAGE_KEY = 'trade_payments_api_url';\nlet API_URL = '';",
+    `const API_STORAGE_KEY = 'trade_payments_api_url';\nlet API_URL = '${bakedApiUrl}';`
+  );
+
+  // Inject startup script: seeds localStorage with latest data + API URL
+  // so teammates get live data immediately on first open
   const injected = `<script>
 (function(){
-  var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3';
+  var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3',AU='${bakedApiUrl}';
   var existing=localStorage.getItem(SD);
   var parsed=existing?JSON.parse(existing):null;
-  // Only seed if localStorage is empty or older version
   if(!parsed||parsed.version!==SV){
     localStorage.setItem(SD,JSON.stringify({version:SV,data:${dataJson},saved:new Date().toISOString()}));
     localStorage.setItem(SC,JSON.stringify(${contractsJson}));
   }
+  // Always bake in the API URL so setup screen is skipped
+  if(AU) localStorage.setItem('trade_payments_api_url', AU);
 })();
 <\/script>`;
 
-  // Inject before </head>
   out = out.replace('</head>', injected + '</head>');
   return out;
 }
@@ -3908,7 +3856,7 @@ function refreshAll() {
 
 // ─── APPS SCRIPT BACKEND ─────────────────────────────────────────────────────
 const API_STORAGE_KEY = 'trade_payments_api_url';
-let API_URL = '';
+let API_URL = 'https://script.google.com/macros/s/AKfycbxWRw_l4EFTvcIaPFEhea1uTlssOCjcg7sd5iwyug0h8qJRb1-RFsS3XLIeGHxXv5-_8A/exec';
 
 // ── Embedded Apps Script (copy this into Google Apps Script) ─────────────────
 const APPS_SCRIPT = `// Trade Payments Dashboard — Apps Script Backend
@@ -4142,16 +4090,26 @@ updateGithubBtn();
 refreshAll();
 
 (async function() {
+  // API_URL may already be baked in (from buildEditorHTML publish)
+  // Priority: baked-in URL > localStorage > show setup screen
   const saved = localStorage.getItem(API_STORAGE_KEY) || '';
-  if (!saved) {
+  const effective = API_URL || saved;
+
+  if (!effective) {
+    // No URL anywhere — first-time admin setup
     document.getElementById('setupScreen').style.display = 'flex';
     return;
   }
-  if (saved === '__local__') {
+  if (effective === '__local__') {
     setSyncState('ok', 'Local only');
     return;
   }
-  API_URL = saved;
+
+  // We have a URL — connect silently, no setup screen needed
+  API_URL = effective;
+  if (!saved || saved !== effective) {
+    localStorage.setItem(API_STORAGE_KEY, effective); // persist for future opens
+  }
   setSyncState('syncing', 'Connecting…');
   const ok = await apiLoad(false);
   if (ok) startPolling();
