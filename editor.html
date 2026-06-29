@@ -22,6 +22,19 @@ header .subtitle{font-size:12px;color:var(--muted);margin-top:1px;}
 .save-indicator{font-size:11px;color:var(--green);opacity:0;transition:opacity 0.4s;}
 .save-indicator.show{opacity:1;}
 
+/* SYNC STATE */
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0;transition:background 0.3s;}
+.sync-dot.syncing{background:var(--amber);animation:syncpulse 0.9s infinite;}
+.sync-dot.error{background:var(--red);}
+@keyframes syncpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.sync-label{font-size:11px;color:var(--muted);white-space:nowrap;}
+
+/* SETUP SCREEN */
+.setup-screen{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:300;display:flex;align-items:center;justify-content:center;}
+.setup-card{max-width:560px;width:100%;padding:36px;background:var(--surface);border:1px solid var(--border);border-radius:16px;}
+.setup-warn{background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:13px;line-height:1.9;color:var(--text);}
+.setup-warn strong{color:var(--amber);}
+
 /* MAIN */
 .main{padding:20px 28px;max-width:1700px;margin:0 auto;}
 
@@ -310,18 +323,54 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 </style>
 <script>
 (function(){
-  var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3';
+  var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3',AU='https://script.google.com/macros/s/AKfycbxWRw_l4EFTvcIaPFEhea1uTlssOCjcg7sd5iwyug0h8qJRb1-RFsS3XLIeGHxXv5-_8A/exec';
   var existing=localStorage.getItem(SD);
   var parsed=existing?JSON.parse(existing):null;
-  // Only seed if localStorage is empty or older version
   if(!parsed||parsed.version!==SV){
-    localStorage.setItem(SD,JSON.stringify({version:SV,data:[{"id":300,"invoice":"INV-0717","invoice_date":"2026-02-20","due_date":"2026-02-23","client":"Puma Energy South Africa","reference":"Diesel Tanks","value":1207500,"paid":false,"amount_due":1207500,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":301,"invoice":"INV-1010","invoice_date":"2026-05-05","due_date":"2026-05-11","client":"Pamish Investments (Nasonti)","reference":"NSTEP002","value":1480713,"paid":false,"amount_due":1480713,"overdue":0,"comment":"AMOUNT STILL OWING","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":302,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":303,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":304,"invoice":"INV-1050","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPSER076 (80%)","value":7261447.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8400.7},{"id":305,"invoice":"INV-1051","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPWAL012 (20%)","value":2010004.1,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":306,"invoice":"INV-1052","invoice_date":"2026-06-25","due_date":"2026-06-25","client":"Foresight","reference":"RMPBLK084 (10%)","value":25119.71,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":307,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMAFEBLK01","value":7933653.54,"paid":false,"amount_due":7933653.54,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (July)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8302},{"id":308,"invoice":"INV-1058","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMKFTAFE01","value":9344793.51,"paid":false,"amount_due":9344793.51,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (July)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8307},{"id":309,"invoice":"INV-1055","invoice_date":"2026-06-29","due_date":"2026-07-03","client":"Grinco","reference":"RMPBLK085 (80%)","value":7307947.92,"paid":false,"amount_due":7307947.92,"overdue":0,"comment":"","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8366}],saved:new Date().toISOString()}));
+    localStorage.setItem(SD,JSON.stringify({version:SV,data:[{"id":300,"invoice":"INV-0717","invoice_date":"2026-02-20","due_date":"2026-02-23","client":"Puma Energy South Africa","reference":"Diesel Tanks","value":1207500,"paid":false,"amount_due":1207500,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":301,"invoice":"INV-1010","invoice_date":"2026-05-05","due_date":"2026-05-11","client":"Pamish Investments (Nasonti)","reference":"NSTEP002","value":1480713,"paid":false,"amount_due":1480713,"overdue":0,"comment":"AMOUNT STILL OWING","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":302,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":303,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":304,"invoice":"INV-1050","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPSER076 (80%)","value":7261447.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8400.7},{"id":305,"invoice":"INV-1051","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPWAL012 (20%)","value":2010004.1,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":306,"invoice":"INV-1052","invoice_date":"2026-06-25","due_date":"2026-06-25","client":"Foresight","reference":"RMPBLK084 (10%)","value":25119.71,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":307,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMAFEBLK01","value":7933653.54,"paid":false,"amount_due":7933653.54,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8302},{"id":308,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMKFTAFE01","value":9344793.51,"paid":false,"amount_due":9344793.51,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8307},{"id":309,"invoice":"To be invoiced","invoice_date":"2026-06-29","due_date":"2026-07-03","client":"Grinco","reference":"RMPBLK085 (80%)","value":7800000,"paid":false,"amount_due":7800000,"overdue":0,"comment":"Awaiting release","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0}],saved:new Date().toISOString()}));
     localStorage.setItem(SC,JSON.stringify([]));
   }
+  // Always bake in the API URL so setup screen is skipped
+  if(AU) localStorage.setItem('trade_payments_api_url', AU);
 })();
 </script></head>
 <body>
 
+<!-- SETUP SCREEN -->
+<div class="setup-screen" id="setupScreen" style="display:none;">
+  <div class="setup-card">
+    <div style="font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px;">💼 Trade Payments Dashboard</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Real-time · Multi-user · Google Apps Script backed</div>
+    <div class="setup-warn">
+      <strong>One-time setup (5 min) — done by admin only</strong><br><br>
+      1. Open a <strong>Google Sheet</strong> → copy its ID from the URL<br>
+         <span style="font-family:monospace;font-size:11px;color:var(--accent);">docs.google.com/spreadsheets/d/<strong>SHEET_ID</strong>/edit</span><br><br>
+      2. In the sheet → <strong>Extensions → Apps Script</strong><br>
+      3. Delete default code → click <strong>📋 Copy Script</strong> below → paste → <strong>Save</strong><br>
+      4. Click <strong>Deploy → New Deployment → Web App</strong><br>
+         Execute as: <strong>Me</strong> | Who has access: <strong>Anyone</strong><br>
+      5. Click <strong>Deploy → Authorise</strong> → copy the <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">/exec</code> URL
+    </div>
+    <div class="field" style="margin-bottom:8px;">
+      <label>Google Sheet ID</label>
+      <input type="text" id="setupSheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" autocomplete="off" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;">
+    </div>
+    <div class="field" style="margin-bottom:12px;">
+      <label>Apps Script Web App URL</label>
+      <input type="text" id="setupApiUrl" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="btn btn-primary" onclick="connectAPI()" style="flex:1;">🔗 Connect &amp; Load</button>
+      <button class="btn" onclick="copyAppsScript()" style="background:rgba(79,124,255,0.15);color:var(--accent);border:1px solid rgba(79,124,255,0.3);">📋 Copy Script</button>
+      <button class="btn btn-outline" onclick="apiSkip()">Use Locally</button>
+    </div>
+    <div id="setupErr" style="font-size:12px;color:var(--red);display:none;margin-top:6px;line-height:1.6;"></div>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.7;">
+      <strong style="color:var(--text);">Already have a URL?</strong> Just paste it in and connect.<br>
+      <strong style="color:var(--text);">Use Locally</strong> — data stays in this browser only, no sharing.
+    </div>
+  </div>
+</div>
 <header>
   <div class="logo">💼</div>
   <div>
@@ -330,7 +379,12 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
   </div>
   <div class="header-right">
     <span class="save-indicator" id="saveIndicator">✓ Saved</span>
-    <button class="btn btn-outline btn-sm" onclick="openSyncModal()" id="syncBtn" title="Load latest data from GitHub">⬇ Sync</button>
+    <div style="display:flex;align-items:center;gap:6px;cursor:pointer;" id="syncIndicator" onclick="openSyncSettings()" title="Click to configure live sharing">
+      <span class="sync-dot" id="syncDot"></span>
+      <span class="sync-label" id="syncLabel">Synced ✓</span>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="openSyncSettings()" id="liveSyncBtn" title="Configure live sharing / JSONBin">🔗 Live Sync</button>
+    <button class="btn btn-outline btn-sm" onclick="openSyncModal()" id="syncBtn" title="Sync latest data from Google Sheets">↻ Sync</button>
     <button class="btn btn-outline btn-sm" onclick="openGithubSettings()" id="githubSettingsBtn" title="Configure GitHub auto-publish" style="color: var(--green); border-color: rgba(34, 197, 94, 0.4);">✅ GitHub</button>
     <div class="date-badge" id="todayBadge">📅 <span id="todayStr">Mon, 29 Jun 2026</span></div>
   </div>
@@ -340,9 +394,9 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 
   <!-- KPI CARDS -->
   <div class="kpi-grid">
-    <div class="kpi total"><div class="kpi-icon">📄</div><div class="kpi-label">Total Invoiced</div><div class="kpi-value blue" id="kpi-total">R 53&nbsp;022&nbsp;394</div><div class="kpi-sub" id="kpi-count">10 invoices</div></div>
+    <div class="kpi total"><div class="kpi-icon">📄</div><div class="kpi-label">Total Invoiced</div><div class="kpi-value blue" id="kpi-total">R 53&nbsp;514&nbsp;446</div><div class="kpi-sub" id="kpi-count">10 invoices</div></div>
     <div class="kpi paid"><div class="kpi-icon">✅</div><div class="kpi-label">Total Paid</div><div class="kpi-value green" id="kpi-paid">R 17&nbsp;110&nbsp;872</div><div class="kpi-sub" id="kpi-paid-count">4 invoices cleared</div></div>
-    <div class="kpi pending"><div class="kpi-icon">⏳</div><div class="kpi-label">Outstanding</div><div class="kpi-value amber" id="kpi-pending">R 35&nbsp;911&nbsp;522</div><div class="kpi-sub" id="kpi-pending-count">6 invoices pending</div></div>
+    <div class="kpi pending"><div class="kpi-icon">⏳</div><div class="kpi-label">Outstanding</div><div class="kpi-value amber" id="kpi-pending">R 36&nbsp;403&nbsp;574</div><div class="kpi-sub" id="kpi-pending-count">6 invoices pending</div></div>
     <div class="kpi overdue"><div class="kpi-icon">🚨</div><div class="kpi-label">Overdue Amount</div><div class="kpi-value red" id="kpi-overdue">R 0</div><div class="kpi-sub" id="kpi-overdue-count">3 invoices need attention</div></div>
   </div>
 
@@ -350,7 +404,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
   <div class="unpaid-box" id="unpaidBox">
     <div class="unpaid-box-header">
       <h2>🚨 Overdue &amp; Unpaid Invoices</h2>
-      <span id="unpaid-last-updated" style="font-size:11px;color:var(--muted);margin-left:auto;">Updated: 15:21</span>
+      <span id="unpaid-last-updated" style="font-size:11px;color:var(--muted);margin-left:auto;">Updated: 16:10</span>
       <div style="display:flex;gap:6px;align-items:center;margin-left:12px;">
         <button class="btn btn-outline btn-xs" onclick="resizeUnpaidPanel(200)" title="Compact">▲ Compact</button>
         <button class="btn btn-outline btn-xs" onclick="resizeUnpaidPanel(500)" title="Larger">↕ Larger</button>
@@ -361,7 +415,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
     </div>
     <div class="unpaid-summary">
       <div class="unpaid-stat"><div class="unpaid-stat-label">Total Overdue Value</div><div class="unpaid-stat-value red" id="up-overdue-val">R 11&nbsp;325&nbsp;127</div></div>
-      <div class="unpaid-stat"><div class="unpaid-stat-label">Total Unpaid Value</div><div class="unpaid-stat-value amber" id="up-unpaid-val">R 35&nbsp;911&nbsp;522</div></div>
+      <div class="unpaid-stat"><div class="unpaid-stat-label">Total Unpaid Value</div><div class="unpaid-stat-value amber" id="up-unpaid-val">R 36&nbsp;403&nbsp;574</div></div>
       <div class="unpaid-stat"><div class="unpaid-stat-label">Overdue Invoices</div><div class="unpaid-stat-value orange" id="up-overdue-count">3 invoices</div></div>
       <div class="unpaid-stat"><div class="unpaid-stat-label">Future / TBD</div><div class="unpaid-stat-value blue" id="up-pending-count">2 invoices</div></div>
     </div>
@@ -453,22 +507,22 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
         <button class="btn btn-green btn-xs" onclick="markPaid(302)">✓ Paid</button>
         <button class="btn btn-amber btn-xs" onclick="openEdit(302)">✏️</button>
       </div></td>
-    </tr><tr class="group-header amber-group"><td colspan="10">⏰ Due Within 7 Days — 1 invoice(s) · R 7&nbsp;307&nbsp;948</td></tr><tr class="due-soon-row">
-      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="INV-1055">INV-1055</td>
+    </tr><tr class="group-header amber-group"><td colspan="10">⏰ Due Within 7 Days — 1 invoice(s) · R 7&nbsp;800&nbsp;000</td></tr><tr class="due-soon-row">
+      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
       <td><strong>Grinco</strong></td>
       <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="RMPBLK085 (80%)">RMPBLK085 (80%)</td>
       <td><span class="contract-tag">003-GTC/CXP</span></td>
       <td style="font-size:12px;white-space:nowrap">2026-07-03</td>
-      <td class="val"><span style="color:var(--muted);font-size:12px;">R 6&nbsp;354&nbsp;737</span></td>
-      <td class="val"><strong>R 7&nbsp;307&nbsp;948</strong></td>
+      <td class="val"><span style="color:var(--muted);font-size:12px;">R 6&nbsp;782&nbsp;609</span></td>
+      <td class="val"><strong>R 7&nbsp;800&nbsp;000</strong></td>
       <td style="white-space:nowrap"><span class="days-pill due-soon">In 4d</span></td>
       
       <td class="comment-cell">
         <div class="comment-display" id="cdisplay-309" onclick="startEditComment(309)" title="Click to edit comment">
-          <span class="comment-add-hint">+ add note</span>
+          <span class="comment-text has-comment" title="Awaiting release">Awaiting release</span>
         </div>
         <div class="comment-edit-wrap" id="cedit-309">
-          <input class="comment-input" id="cinput-309" type="text" value="" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(309);if(event.key==='Escape')cancelEditComment(309)">
+          <input class="comment-input" id="cinput-309" type="text" value="Awaiting release" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(309);if(event.key==='Escape')cancelEditComment(309)">
           <button class="comment-save-btn" onclick="saveComment(309)">✓</button>
           <button class="comment-cancel-btn" onclick="cancelEditComment(309)">✕</button>
         </div>
@@ -502,7 +556,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
         <button class="btn btn-amber btn-xs" onclick="openEdit(307)">✏️</button>
       </div></td>
     </tr><tr class="pending-row">
-      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="INV-1058">INV-1058</td>
+      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
       <td><strong>Thungela</strong></td>
       <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="CMKFTAFE01">CMKFTAFE01</td>
       <td><span class="contract-tag">TGA COM 003 | RB…</span></td>
@@ -568,11 +622,11 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       
       <div class="cc-meta">
         <span>2 invoices</span>
-        <span>48% of total</span>
+        <span>47% of total</span>
         <span class="cc-tag clear">✓ On track</span>
       </div>
       <div class="cc-bar-track">
-        <div class="cc-bar-fill " style="width:48%"></div>
+        <div class="cc-bar-fill " style="width:47%"></div>
       </div>
     </div><div class="client-card has-overdue" onclick="filterTableByClient('Pamish Investments (Nasonti)')">
       <div class="cc-name" title="Pamish Investments (Nasonti)">Pamish Investments (Nasonti)</div>
@@ -588,15 +642,15 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       </div>
     </div><div class="client-card all-clear" onclick="filterTableByClient('Grinco')">
       <div class="cc-name" title="Grinco">Grinco</div>
-      <div class="cc-amount ">R 7&nbsp;307&nbsp;948</div>
+      <div class="cc-amount ">R 7&nbsp;800&nbsp;000</div>
       
       <div class="cc-meta">
         <span>1 invoice</span>
-        <span>20% of total</span>
+        <span>21% of total</span>
         <span class="cc-tag clear">✓ On track</span>
       </div>
       <div class="cc-bar-track">
-        <div class="cc-bar-fill " style="width:20%"></div>
+        <div class="cc-bar-fill " style="width:21%"></div>
       </div>
     </div><div class="client-card has-overdue" onclick="filterTableByClient('Puma Energy South Africa')">
       <div class="cc-name" title="Puma Energy South Africa">Puma Energy South Africa</div>
@@ -857,17 +911,17 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
         <button class="btn btn-red btn-xs" onclick="confirmDelete(305)" title="Delete">🗑</button>
       </div></td>
     </tr><tr>
-      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-1055">INV-1055</td>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
       <td><strong>Grinco</strong></td>
       <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="RMPBLK085 (80%)">RMPBLK085 (80%)</td>
       <td><span class="contract-tag" title="003-GTC/CXP">003-GTC/CXP</span></td>
       <td style="color:var(--muted);font-size:12px">2026-06-29</td>
       <td style="font-size:12px">2026-07-03</td>
-      <td class="val"><span style="color:var(--muted);font-size:12px">R 6&nbsp;354&nbsp;737</span></td>
-      <td class="val"><strong>R 7&nbsp;307&nbsp;948</strong></td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 6&nbsp;782&nbsp;609</span></td>
+      <td class="val"><strong>R 7&nbsp;800&nbsp;000</strong></td>
       <td><span class="badge due-soon">⚡ Due Soon</span></td>
       <td><span class="days-pill due-soon">In 4d</span></td>
-      <td><span style="font-size:12px;color:var(--muted)">8,366t</span></td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
       <td><div class="actions-cell">
         <button class="btn btn-green btn-xs" onclick="markPaid(309)" title="Mark as Paid">✓ Paid</button>
         <button class="btn btn-amber btn-xs" onclick="openEdit(309)" title="Edit">✏️</button>
@@ -877,7 +931,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
       <td><strong>Thungela</strong></td>
       <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="CMAFEBLK01">CMAFEBLK01</td>
-      <td><span class="contract-tag" title="TGA COM 003 | RB2 FCA (July)">TGA COM 003 | RB2 …</span></td>
+      <td><span class="contract-tag" title="TGA COM 003 | RB2 FCA (June)">TGA COM 003 | RB2 …</span></td>
       <td style="color:var(--muted);font-size:12px">2026-06-19</td>
       <td style="font-size:12px">2026-07-08</td>
       <td class="val"><span style="color:var(--muted);font-size:12px">R 6&nbsp;898&nbsp;829</span></td>
@@ -891,10 +945,10 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
         <button class="btn btn-red btn-xs" onclick="confirmDelete(307)" title="Delete">🗑</button>
       </div></td>
     </tr><tr>
-      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-1058">INV-1058</td>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
       <td><strong>Thungela</strong></td>
       <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="CMKFTAFE01">CMKFTAFE01</td>
-      <td><span class="contract-tag" title="TGA COM 003 | RB2 FCA (July)">TGA COM 003 | RB2 …</span></td>
+      <td><span class="contract-tag" title="TGA COM 003 | RB2 FCA (June)">TGA COM 003 | RB2 …</span></td>
       <td style="color:var(--muted);font-size:12px">2026-06-19</td>
       <td style="font-size:12px">2026-07-08</td>
       <td class="val"><span style="color:var(--muted);font-size:12px">R 8&nbsp;125&nbsp;907</span></td>
@@ -1072,32 +1126,74 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- SYNC FROM GITHUB MODAL -->
+<!-- SYNC MODAL -->
 <div class="modal-overlay" id="syncModal">
-  <div class="modal" style="max-width:500px;">
-    <h2>⬇ Sync from GitHub</h2>
-    <div class="sub">Pull the latest invoice and contract data from GitHub into this browser. Use this when someone else has published an update and you want to work from the current version.</div>
+  <div class="modal" style="max-width:480px;">
+    <h2>↻ Sync Latest Data</h2>
+    <div class="sub">Pull the latest data from the shared Google Sheet into this browser.</div>
 
-    <div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;">
-      <strong style="color:var(--green);">How shared editing works:</strong>
+    <div id="syncNotConnectedWarn" style="display:none;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:var(--amber);">
+      ⚠ No live sync connected. Click <strong>🔗 Live Sync</strong> in the header to set up Google Apps Script first.
+    </div>
+
+    <div id="syncConnectedInfo" style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;">
+      <strong style="color:var(--green);">How it works:</strong>
       <ol style="margin-top:8px;padding-left:16px;line-height:2;font-size:12px;color:var(--text);">
-        <li>Everyone opens the same dashboard URL (hosted on GitHub Pages)</li>
-        <li>Click <strong>⬇ Sync</strong> to load the latest data before making changes</li>
-        <li>Make your changes (add invoices, mark paid, update contracts)</li>
-        <li>Click <strong>🚀 Publish to Viewer</strong> to push your changes back to GitHub</li>
-        <li>Others click <strong>⬇ Sync</strong> to pick up your changes</li>
+        <li>Everyone opens the shared dashboard link</li>
+        <li>The dashboard <strong>auto-syncs every 30 seconds</strong> — no manual steps needed</li>
+        <li>Any changes you make save to the shared Google Sheet instantly</li>
+        <li>Click <strong>↻ Sync Now</strong> to force an immediate refresh</li>
       </ol>
     </div>
 
-    <div id="syncStatus" style="font-size: 13px; min-height: 20px; margin-bottom: 14px; display: block; padding: 10px 14px; border-radius: 8px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); color: var(--red);">❌ Could not find invoice data in the published file. Publish from the dashboard first.</div>
+    <div id="syncStatus" style="font-size:13px;min-height:20px;margin-bottom:14px;display:none;padding:10px 14px;border-radius:8px;"></div>
 
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('syncModal')">Cancel</button>
-      <button class="btn btn-primary" id="syncNowBtn" onclick="syncFromGitHub()">⬇ Sync Now</button>
+      <button class="btn btn-primary" id="syncNowBtn" onclick="syncFromGitHub()">↻ Sync Now</button>
     </div>
   </div>
 </div>
 
+<!-- LIVE SYNC MODAL -->
+<div class="modal-overlay" id="syncSettingsModal">
+  <div class="modal" style="max-width:520px;">
+    <h2>🔗 Live Sync Settings</h2>
+    <div id="syncNotConnected" style="display: none;">
+      <div class="sub">Connect to Google Apps Script to share this dashboard in real time.</div>
+      <div class="field" style="margin-top:12px;margin-bottom:8px;">
+        <label>Apps Script Web App URL</label>
+        <input type="text" id="syncApiUrlInput" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off">
+      </div>
+      <div id="syncModalErr" style="font-size:12px;color:var(--red);display:none;margin-bottom:10px;"></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('syncSettingsModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="connectFromModal()">🔗 Connect</button>
+      </div>
+    </div>
+    <div id="syncConnected" style="display: block;">
+      <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+        <div style="font-weight:700;color:var(--green);margin-bottom:4px;">🟢 Live Sync Active</div>
+        <div style="font-size:12px;color:var(--muted);" id="syncConnectedUrl">https://script.google.com/macros/s/AKfycbxWRw_l4EFTvcIaPFEhea1uTlssOCjcg7sd5iwyug0h8qJRb1-RFsS3XLIeGHxXv5-_8A/exec</div>
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Share this dashboard file + URL with your team</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="syncUrlDisplay" readonly="" style="flex:1;color:var(--accent);font-size:12px;cursor:pointer;" onclick="this.select()">
+          <button class="btn btn-primary btn-sm" onclick="copySyncUrl()">📋 Copy URL</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:5px;">Anyone with this HTML file and URL connects to the same live data.</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline btn-sm" onclick="apiLoad(false)" style="flex:1;">↻ Sync Now</button>
+        <button class="btn btn-red btn-sm" onclick="apiDisconnect()" style="flex:1;">✕ Disconnect</button>
+      </div>
+      <div class="modal-footer" style="margin-top:14px;">
+        <button class="btn btn-outline" onclick="closeModal('syncSettingsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- GITHUB SETTINGS MODAL -->
 <div class="modal-overlay" id="githubSettingsModal">
   <div class="modal" style="max-width:560px;">
@@ -1130,6 +1226,11 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
         <label>Personal Access Token</label>
         <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
         <div style="font-size:11px;color:var(--muted);margin-top:4px;">🔒 Stored only in your browser — never sent anywhere except GitHub's API.</div>
+      </div>
+      <div class="field" style="grid-column:1/-1">
+        <label>Apps Script URL <span style="font-weight:400;color:var(--muted);">(optional — for audit log to Google Sheets)</span></label>
+        <input type="text" id="gh-apps-script-url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">📋 Paste your deployed Web App URL here to log all invoice changes to a Google Sheet automatically.</div>
       </div>
     </div>
 
@@ -1178,15 +1279,10 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       <div style="display:flex;flex-direction:column;gap:10px;" id="publishSteps"><div style="font-size: 13px; display: flex; align-items: center; gap: 8px;"><span>✅</span><span>index.html ready ✓</span></div><div style="font-size: 13px; display: flex; align-items: center; gap: 8px;"><span>✅</span><span>Stakeholder Viewer published ✓</span></div></div>
     </div>
 
-    <div id="publishResult" style="display: none; background: rgba(34, 197, 94, 0.08); border: 1px solid rgba(34, 197, 94, 0.25); border-radius: 10px; padding: 14px 16px; margin-bottom: 16px;">
+    <div id="publishResult" style="display:none;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
       <div style="font-weight:700;color:var(--green);margin-bottom:6px;">✅ Published successfully!</div>
       <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">GitHub Pages will update within 30–60 seconds.</div>
-      <div style="display:flex;flex-direction:column;gap:6px;" id="publishedUrls">
-    <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
-      <span style="font-size:12px;font-weight:600;color:var(--muted);min-width:160px;">✏️ Editor Dashboard</span>
-      <a href="https://Mikaeelessa.github.io/Invoice-Tracker/editor.html" target="_blank" style="color:var(--accent);font-size:13px;font-weight:600;text-decoration:none;">https://Mikaeelessa.github.io/Invoice-Tracker/editor.html</a>
-      <button class="btn btn-outline btn-xs" onclick="navigator.clipboard.writeText('https://Mikaeelessa.github.io/Invoice-Tracker/editor.html');showToast('📋 Copied!','https://Mikaeelessa.github.io/Invoice-Tracker/editor.html')">📋</button>
-    </div></div>
+      <div style="display:flex;flex-direction:column;gap:6px;" id="publishedUrls"></div>
     </div>
 
     <div id="publishError" style="display:none;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
@@ -1244,7 +1340,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
           <option value="true">Paid</option>
         </select>
       </div>
-      <div class="field"><label>Amount Still Due <span style="font-weight:400;color:var(--muted);font-size:10px;">auto-fills from value</span></label><input type="number" id="e-amount-due" step="0.01" data-manually-edited=""></div>
+      <div class="field"><label>Amount Still Due <span style="font-weight:400;color:var(--muted);font-size:10px;">auto-fills from value</span></label><input type="number" id="e-amount-due" step="0.01"></div>
     </div>
     <div style="background:rgba(79,124,255,0.06);border:1px solid rgba(79,124,255,0.2);border-radius:10px;padding:14px;margin-bottom:14px;">
       <div style="font-size:11px;font-weight:600;color:#7ab3ff;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;">📋 Contract &amp; Tonnage</div>
@@ -1276,18 +1372,18 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"><div class="t-title" id="toastTitle">📋 Copied!</div><div id="toastMsg">https://Mikaeelessa.github.io/Invoice-Tracker/editor.html</div></div>
+<div class="toast" id="toast"><div class="t-title" id="toastTitle">📋 URL Copied!</div><div id="toastMsg">Share this URL with your team.</div></div>
 
 <script>
 // ─── SEED DATA ───────────────────────────────────────────────────────────────
-const SEED = [{"id":300,"invoice":"INV-0717","invoice_date":"2026-02-20","due_date":"2026-02-23","client":"Puma Energy South Africa","reference":"Diesel Tanks","value":1207500,"paid":false,"amount_due":1207500,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":301,"invoice":"INV-1010","invoice_date":"2026-05-05","due_date":"2026-05-11","client":"Pamish Investments (Nasonti)","reference":"NSTEP002","value":1480713,"paid":false,"amount_due":1480713,"overdue":0,"comment":"AMOUNT STILL OWING","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":302,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":303,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":304,"invoice":"INV-1050","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPSER076 (80%)","value":7261447.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8400.7},{"id":305,"invoice":"INV-1051","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPWAL012 (20%)","value":2010004.1,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":306,"invoice":"INV-1052","invoice_date":"2026-06-25","due_date":"2026-06-25","client":"Foresight","reference":"RMPBLK084 (10%)","value":25119.71,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":307,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMAFEBLK01","value":7933653.54,"paid":false,"amount_due":7933653.54,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (July)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8302},{"id":308,"invoice":"INV-1058","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMKFTAFE01","value":9344793.51,"paid":false,"amount_due":9344793.51,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (July)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8307},{"id":309,"invoice":"INV-1055","invoice_date":"2026-06-29","due_date":"2026-07-03","client":"Grinco","reference":"RMPBLK085 (80%)","value":7307947.92,"paid":false,"amount_due":7307947.92,"overdue":0,"comment":"","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8366}];
+const SEED = [{"id":300,"invoice":"INV-0717","invoice_date":"2026-02-20","due_date":"2026-02-23","client":"Puma Energy South Africa","reference":"Diesel Tanks","value":1207500,"paid":false,"amount_due":1207500,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":301,"invoice":"INV-1010","invoice_date":"2026-05-05","due_date":"2026-05-11","client":"Pamish Investments (Nasonti)","reference":"NSTEP002","value":1480713,"paid":false,"amount_due":1480713,"overdue":0,"comment":"AMOUNT STILL OWING","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":302,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":303,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":304,"invoice":"INV-1050","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPSER076 (80%)","value":7261447.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8400.7},{"id":305,"invoice":"INV-1051","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPWAL012 (20%)","value":2010004.1,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":306,"invoice":"INV-1052","invoice_date":"2026-06-25","due_date":"2026-06-25","client":"Foresight","reference":"RMPBLK084 (10%)","value":25119.71,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":307,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMAFEBLK01","value":7933653.54,"paid":false,"amount_due":7933653.54,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8302},{"id":308,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMKFTAFE01","value":9344793.51,"paid":false,"amount_due":9344793.51,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8307},{"id":309,"invoice":"To be invoiced","invoice_date":"2026-06-29","due_date":"2026-07-03","client":"Grinco","reference":"RMPBLK085 (80%)","value":7800000,"paid":false,"amount_due":7800000,"overdue":0,"comment":"Awaiting release","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0}];
 
 const STORAGE_KEY = 'trade_payments_data';
 const STORAGE_VER = 'v3';
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let DATA = [];
-let nextId = 200;
+let nextId = 300;
 let currentFilter = 'all';
 let sortKey = 'due_date';
 let sortDir = 1;
@@ -1819,8 +1915,9 @@ function markPaid(id) {
   r.overdue = 0;
   if (!r.comment) r.comment = `Paid ${new Date().toLocaleDateString('en-ZA')}`;
   else if (!r.comment.includes('Paid')) r.comment += ` | Paid ${new Date().toLocaleDateString('en-ZA')}`;
-  saveData();
+  syncAll();
   refreshAll();
+  auditLog('MARKED PAID', r);
   showToast('✅ Marked as Paid', `${r.invoice} (${r.client}) marked paid.`);
 }
 
@@ -1871,7 +1968,8 @@ function addInvoice() {
   }
 
   DATA.push({id:nextId++, invoice:invNum, invoice_date:invDate||'TBD', due_date:dueDate||'TBD', client, reference:ref, value, paid, amount_due:amtDue, overdue, comment, contract, contract_tons_total:contractTonsTotal, contract_tons_delivered:contractTonsDelivered, invoice_tons:invoiceTons});
-  saveData();
+  syncAll();
+  auditLog('ADDED', DATA[DATA.length-1]);
   refreshAll();
   clearForm();
   document.getElementById('formMsg').style.color='var(--green)';
@@ -1925,7 +2023,8 @@ function saveEdit() {
   r.contract_tons_delivered = parseFloat(document.getElementById('e-contract-tons-delivered').value)||0;
   r.invoice_tons = parseFloat(document.getElementById('e-invoice-tons').value)||0;
   closeModal('editModal');
-  saveData();
+  syncAll();
+  auditLog('EDITED', r);
   refreshAll();
   showToast('✏️ Invoice Updated', `${r.invoice} has been saved.`);
 }
@@ -1942,8 +2041,9 @@ function confirmDelete(id) {
 
 function deleteInvoice(id) {
   const r = DATA.find(x=>x.id===id);
+  auditLog('DELETED', r);
   DATA = DATA.filter(x=>x.id!==id);
-  saveData();
+  syncAll();
   refreshAll();
   showToast('🗑 Deleted', `${r?.invoice} removed.`);
 }
@@ -2686,6 +2786,36 @@ async function exportUnpaidImage() {
   }
 }
 
+// ─── AUDIT LOG ────────────────────────────────────────────────────────────────
+const APPS_SCRIPT_KEY = 'trade_payments_apps_script_url';
+
+function getAppsScriptUrl() {
+  try { return localStorage.getItem(APPS_SCRIPT_KEY) || ''; } catch(e) { return ''; }
+}
+
+function auditLog(action, r) {
+  const url = getAppsScriptUrl();
+  if (!url) return; // silently skip if not configured
+  const payload = {
+    timestamp:   new Date().toISOString(),
+    action:      action,
+    invoice:     r?.invoice  || '',
+    client:      r?.client   || '',
+    reference:   r?.reference|| '',
+    due_date:    r?.due_date || '',
+    value:       r?.value    || 0,
+    paid:        r?.paid     ? 'Yes' : 'No',
+    comment:     r?.comment  || '',
+    contract:    r?.contract || '',
+  };
+  fetch(url, {
+    method:  'POST',
+    mode:    'no-cors', // Apps Script requires no-cors from external origins
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(payload)
+  }).catch(() => {}); // fire-and-forget — never block the UI
+}
+
 // ─── GITHUB SETTINGS ──────────────────────────────────────────────────────────
 const GH_STORAGE_KEY = 'trade_payments_gh_config';
 
@@ -2701,6 +2831,7 @@ function openGithubSettings() {
   document.getElementById('gh-username').value = cfg.username || '';
   document.getElementById('gh-repo').value = cfg.repo || '';
   document.getElementById('gh-token').value = cfg.token || '';
+  document.getElementById('gh-apps-script-url').value = getAppsScriptUrl();
   document.getElementById('gh-settings-status').textContent = cfg.username ? `✓ Currently configured: ${cfg.username}/${cfg.repo}` : '';
   document.getElementById('gh-settings-status').style.color = 'var(--green)';
   document.getElementById('githubSettingsModal').classList.add('open');
@@ -2708,16 +2839,19 @@ function openGithubSettings() {
 
 function saveGithubSettings() {
   const username = document.getElementById('gh-username').value.trim();
-  const repo = document.getElementById('gh-repo').value.trim();
-  const token = document.getElementById('gh-token').value.trim();
+  const repo     = document.getElementById('gh-repo').value.trim();
+  const token    = document.getElementById('gh-token').value.trim();
+  const appsUrl  = document.getElementById('gh-apps-script-url').value.trim();
   if (!username || !repo || !token) {
-    document.getElementById('gh-settings-status').textContent = '⚠ All three fields are required.';
+    document.getElementById('gh-settings-status').textContent = '⚠ GitHub username, repo and token are required.';
     document.getElementById('gh-settings-status').style.color = 'var(--red)';
     return;
   }
   saveGithubConfig({ username, repo, token });
+  if (appsUrl) localStorage.setItem(APPS_SCRIPT_KEY, appsUrl);
+  else localStorage.removeItem(APPS_SCRIPT_KEY);
   closeModal('githubSettingsModal');
-  showToast('⚙️ GitHub Settings Saved', `Connected to ${username}/${repo}`);
+  showToast('⚙️ Settings Saved', appsUrl ? `GitHub + Audit Log configured.` : `GitHub configured for ${username}/${repo}`);
   updateGithubBtn();
 }
 
@@ -2789,13 +2923,18 @@ function openSyncModal() {
   document.getElementById('syncModal').classList.add('open');
 }
 
-async function syncFromGitHub() {
-  const cfg = loadGithubConfig();
-  if (!cfg.username || !cfg.repo) {
-    openGithubSettings();
-    return;
-  }
+function openSyncModal() {
+  const connected = API_URL && API_URL !== '__local__';
+  document.getElementById('syncNotConnectedWarn').style.display = connected ? 'none' : 'block';
+  document.getElementById('syncConnectedInfo').style.display    = connected ? 'block' : 'none';
+  document.getElementById('syncStatus').style.display = 'none';
+  document.getElementById('syncNowBtn').textContent = '↻ Sync Now';
+  document.getElementById('syncNowBtn').disabled = !connected;
+  document.getElementById('syncModal').classList.add('open');
+}
 
+async function syncFromGitHub() {
+  // Despite the old name, this now syncs from Apps Script (Google Sheets)
   const statusEl = document.getElementById('syncStatus');
   const btn = document.getElementById('syncNowBtn');
   btn.disabled = true;
@@ -2804,64 +2943,24 @@ async function syncFromGitHub() {
   statusEl.style.background = 'rgba(79,124,255,0.08)';
   statusEl.style.border = '1px solid rgba(79,124,255,0.2)';
   statusEl.style.color = 'var(--accent)';
-  statusEl.textContent = 'Fetching latest data from GitHub…';
+  statusEl.textContent = 'Loading latest data from Google Sheets…';
 
-  try {
-    // Fetch the raw editor.html from GitHub (falls back to index.html)
-    const editorUrl = `https://raw.githubusercontent.com/${cfg.username}/${cfg.repo}/main/editor.html`;
-    const indexUrl  = `https://raw.githubusercontent.com/${cfg.username}/${cfg.repo}/main/index.html`;
-    let res = await fetch(editorUrl + '?t=' + Date.now());
-    if (!res.ok) res = await fetch(indexUrl + '?t=' + Date.now());
-    if (!res.ok) throw new Error(`GitHub returned ${res.status}. Make sure the repo is public and editor.html (or index.html) exists.`);
+  const ok = await apiLoad(false);
 
-    const html = await res.text();
-
-    // Extract DATA array from the viewer HTML
-    const dataMatch = html.match(/const DATA = (\[[\s\S]*?\]);/);
-    const contractsMatch = html.match(/const CONTRACTS = (\[[\s\S]*?\]);/);
-
-    if (!dataMatch) throw new Error('Could not find invoice data in the published file. Publish from the dashboard first.');
-
-    const newData = JSON.parse(dataMatch[1]);
-    const newContracts = contractsMatch ? JSON.parse(contractsMatch[1]) : CONTRACTS;
-
-    const prevCount = DATA.length;
-    const newCount = newData.length;
-
-    // Load into memory and localStorage
-    DATA.length = 0;
-    newData.forEach(r => DATA.push(r));
-    nextId = DATA.length ? Math.max(...DATA.map(r => r.id || 0)) + 1 : 1;
-    saveData();
-
-    CONTRACTS.length = 0;
-    newContracts.forEach(c => CONTRACTS.push(c));
-    nextContractId = CONTRACTS.length ? Math.max(...CONTRACTS.map(c => c.id || 0)) + 1 : 1;
-    saveContracts();
-
-    refreshAll();
-
+  if (ok) {
     statusEl.style.background = 'rgba(34,197,94,0.08)';
     statusEl.style.border = '1px solid rgba(34,197,94,0.25)';
     statusEl.style.color = 'var(--green)';
-    statusEl.textContent = `✅ Synced successfully — ${newCount} invoices, ${newContracts.length} contracts loaded. (Was ${prevCount} invoices before sync.)`;
-
+    statusEl.textContent = `✅ Synced — ${DATA.length} invoices, ${CONTRACTS.length} contracts loaded.`;
     btn.textContent = '✅ Done';
-    showToast('⬇ Synced from GitHub', `${newCount} invoices and ${newContracts.length} contracts loaded.`);
-
-    setTimeout(() => {
-      closeModal('syncModal');
-      btn.disabled = false;
-      btn.textContent = '⬇ Sync Now';
-    }, 2000);
-
-  } catch(e) {
+    setTimeout(() => { closeModal('syncModal'); btn.disabled = false; btn.textContent = '↻ Sync Now'; }, 1800);
+  } else {
     statusEl.style.background = 'rgba(239,68,68,0.08)';
     statusEl.style.border = '1px solid rgba(239,68,68,0.25)';
     statusEl.style.color = 'var(--red)';
-    statusEl.textContent = `❌ ${e.message}`;
+    statusEl.textContent = '❌ Sync failed. Check your Apps Script URL in 🔗 Live Sync settings.';
     btn.disabled = false;
-    btn.textContent = '⬇ Sync Now';
+    btn.textContent = '↻ Sync Now';
   }
 }
 
@@ -2998,32 +3097,39 @@ async function runPublish(cfg, mode) {
 }
 
 function buildEditorHTML() {
-  // Returns the current dashboard file with live DATA + CONTRACTS baked into the SEED
-  // so anyone opening editor.html starts with the current data
   const src = document.documentElement.outerHTML;
-  const dataJson = JSON.stringify(DATA);
+  const dataJson      = JSON.stringify(DATA);
   const contractsJson = JSON.stringify(CONTRACTS);
+  const bakedApiUrl   = API_URL || '';  // bake the live sync URL in
 
-  // Replace the SEED constant and CONTRACTS seed in the source
-  let out = src.replace(/const SEED\s*=\s*\[[\s\S]*?\];/, `const SEED = ${dataJson};`);
-  out = out.replace(/let CONTRACTS\s*=\s*\[\s*\];/, `let CONTRACTS = [];`);
+  let out = src;
 
-  // Inject a startup script that pre-loads localStorage with current data
-  // so new users get the latest data on first open
+  // Bake latest data into SEED
+  out = out.replace(/const SEED\s*=\s*\[[\s\S]*?\];/, `const SEED = ${dataJson};`);
+
+  // Bake the API URL in so the setup screen never shows for teammates
+  // Replace the init block's localStorage check with a hardcoded URL
+  out = out.replace(
+    "const API_STORAGE_KEY = 'trade_payments_api_url';\nlet API_URL = '';",
+    `const API_STORAGE_KEY = 'trade_payments_api_url';\nlet API_URL = '${bakedApiUrl}';`
+  );
+
+  // Inject startup script: seeds localStorage with latest data + API URL
+  // so teammates get live data immediately on first open
   const injected = `<script>
 (function(){
-  var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3';
+  var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3',AU='${bakedApiUrl}';
   var existing=localStorage.getItem(SD);
   var parsed=existing?JSON.parse(existing):null;
-  // Only seed if localStorage is empty or older version
   if(!parsed||parsed.version!==SV){
     localStorage.setItem(SD,JSON.stringify({version:SV,data:${dataJson},saved:new Date().toISOString()}));
     localStorage.setItem(SC,JSON.stringify(${contractsJson}));
   }
+  // Always bake in the API URL so setup screen is skipped
+  if(AU) localStorage.setItem('trade_payments_api_url', AU);
 })();
 <\/script>`;
 
-  // Inject before </head>
   out = out.replace('</head>', injected + '</head>');
   return out;
 }
@@ -3716,6 +3822,233 @@ function refreshAll() {
   renderContracts();
 }
 
+// ─── APPS SCRIPT BACKEND ─────────────────────────────────────────────────────
+const API_STORAGE_KEY = 'trade_payments_api_url';
+let API_URL = 'https://script.google.com/macros/s/AKfycbxWRw_l4EFTvcIaPFEhea1uTlssOCjcg7sd5iwyug0h8qJRb1-RFsS3XLIeGHxXv5-_8A/exec';
+
+// ── Embedded Apps Script (copy this into Google Apps Script) ─────────────────
+const APPS_SCRIPT = `// Trade Payments Dashboard — Apps Script Backend
+// SETUP:
+// 1. Open your Google Sheet → Extensions → Apps Script
+// 2. Delete all existing code and paste this entire script
+// 3. Save (Ctrl+S) → Deploy → New Deployment → Web App
+//    Execute as: Me | Who has access: Anyone
+// 4. Click Deploy → Authorise → copy the /exec URL
+
+function doGet(e) {
+  return respond(loadAll());
+}
+
+function doPost(e) {
+  try {
+    const d = JSON.parse(e.postData.contents);
+    if (d.action === 'save') { saveAll(d.invoices, d.contracts); return respond({ ok: true }); }
+  } catch(err) { return respond({ ok: false, error: err.toString() }); }
+}
+
+function respond(data) {
+  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function loadAll() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  return {
+    invoices:  loadSheet(ss, 'invoices'),
+    contracts: loadSheet(ss, 'contracts')
+  };
+}
+
+function loadSheet(ss, name) {
+  let sh = ss.getSheetByName(name);
+  if (!sh || sh.getLastRow() < 2) return [];
+  return sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues()
+    .map(row => { try { return JSON.parse(row[0] || 'null'); } catch(e) { return null; } })
+    .filter(r => r !== null);
+}
+
+function saveAll(invoices, contracts) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  writeSheet(ss, 'invoices',  invoices  || []);
+  writeSheet(ss, 'contracts', contracts || []);
+}
+
+function writeSheet(ss, name, arr) {
+  let sh = ss.getSheetByName(name);
+  if (!sh) sh = ss.insertSheet(name);
+  sh.clearContents();
+  sh.getRange(1, 1).setValue('data');
+  if (arr.length > 0) {
+    sh.getRange(2, 1, arr.length, 1).setValues(arr.map(item => [JSON.stringify(item)]));
+  }
+}`;
+
+// ── Copy Apps Script to clipboard ────────────────────────────
+function copyAppsScript() {
+  navigator.clipboard.writeText(APPS_SCRIPT).then(() => {
+    showToast('📋 Script Copied!', 'Paste into Google Apps Script editor.');
+  });
+}
+
+// ── Sync state indicator ──────────────────────────────────────
+function setSyncState(state, text) {
+  const dot   = document.getElementById('syncDot');
+  const label = document.getElementById('syncLabel');
+  if (!dot || !label) return;
+  dot.className = 'sync-dot' + (state==='syncing'?' syncing':state==='error'?' error':'');
+  label.textContent = text;
+}
+
+// ── syncAll — called after every mutation ─────────────────────
+function syncAll() {
+  saveData(true);
+  saveContracts();
+  apiSave();
+}
+
+// ── Load from Apps Script ─────────────────────────────────────
+async function apiLoad(silent) {
+  if (!API_URL) return false;
+  if (!silent) setSyncState('syncing', 'Loading…');
+  try {
+    const r = await fetch(API_URL, { redirect: 'follow' });
+    const d = await r.json();
+    if (d.invoices !== undefined) {
+      DATA.length = 0;
+      (d.invoices || []).forEach(r => DATA.push(r));
+      nextId = DATA.length ? Math.max(...DATA.map(r => r.id||0)) + 1 : 300;
+      CONTRACTS.length = 0;
+      (d.contracts || []).forEach(c => CONTRACTS.push(c));
+      nextContractId = CONTRACTS.length ? Math.max(...CONTRACTS.map(c => c.id||0)) + 1 : 1;
+      saveData(true);
+      saveContracts();
+      refreshAll();
+      setSyncState('ok', 'Synced ✓');
+      return true;
+    }
+    throw new Error('Unexpected response');
+  } catch(e) {
+    setSyncState('error', 'Sync failed');
+    console.warn('apiLoad:', e.message);
+    return false;
+  }
+}
+
+// ── Save to Apps Script ───────────────────────────────────────
+async function apiSave() {
+  if (!API_URL) return;
+  setSyncState('syncing', 'Saving…');
+  try {
+    await fetch(API_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'save', invoices: DATA, contracts: CONTRACTS })
+    });
+    setSyncState('ok', 'Saved ✓');
+  } catch(e) {
+    setSyncState('error', 'Save failed');
+    console.warn('apiSave:', e.message);
+  }
+}
+
+// ── Auto-poll every 30 seconds ────────────────────────────────
+let pollTimer = null;
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(() => apiLoad(true), 30000);
+}
+
+// ── Setup screen connect ──────────────────────────────────────
+async function connectAPI() {
+  const sheetId = document.getElementById('setupSheetId').value.trim();
+  const url     = document.getElementById('setupApiUrl').value.trim();
+  const errEl   = document.getElementById('setupErr');
+  errEl.style.display = 'none';
+  if (!url || !url.includes('script.google.com')) {
+    errEl.textContent = '⚠ Please paste your Apps Script Web App URL (ends in /exec).';
+    errEl.style.display = 'block';
+    return;
+  }
+  API_URL = url;
+  localStorage.setItem(API_STORAGE_KEY, url);
+  const btn = document.querySelector('#setupStep1 .btn-primary');
+  if (btn) { btn.textContent = '⏳ Connecting…'; btn.disabled = true; }
+  const ok = await apiLoad(false);
+  if (ok) {
+    document.getElementById('setupScreen').style.display = 'none';
+    startPolling();
+    showToast('🟢 Connected!', 'Live data loaded. Auto-syncing every 30s.');
+  } else {
+    errEl.textContent = '❌ Could not connect. Check: (1) URL ends in /exec not /dev, (2) Who has access = Anyone, (3) you clicked Authorise when deploying.';
+    errEl.style.display = 'block';
+    API_URL = '';
+    localStorage.removeItem(API_STORAGE_KEY);
+  }
+  if (btn) { btn.textContent = '🔗 Connect & Load'; btn.disabled = false; }
+}
+
+function apiSkip() {
+  document.getElementById('setupScreen').style.display = 'none';
+  localStorage.setItem(API_STORAGE_KEY, '__local__');
+  setSyncState('ok', 'Local only');
+}
+
+// ── Settings modal ────────────────────────────────────────────
+function openSyncSettings() {
+  const url = localStorage.getItem(API_STORAGE_KEY) || '';
+  const connected = url && url !== '__local__';
+  document.getElementById('syncNotConnected').style.display = connected ? 'none' : 'block';
+  document.getElementById('syncConnected').style.display    = connected ? 'block' : 'none';
+  document.getElementById('syncModalErr').style.display     = 'none';
+  if (connected) {
+    document.getElementById('syncConnectedUrl').textContent = url;
+    document.getElementById('syncUrlDisplay').value = url;
+  }
+  document.getElementById('syncSettingsModal').classList.add('open');
+}
+
+async function connectFromModal() {
+  const url   = document.getElementById('syncApiUrlInput').value.trim();
+  const errEl = document.getElementById('syncModalErr');
+  errEl.style.display = 'none';
+  if (!url || !url.includes('script.google.com')) {
+    errEl.textContent = '⚠ Please paste a valid Apps Script /exec URL.';
+    errEl.style.display = 'block';
+    return;
+  }
+  const btn = event.target; btn.textContent = '⏳ Connecting…'; btn.disabled = true;
+  API_URL = url;
+  localStorage.setItem(API_STORAGE_KEY, url);
+  const ok = await apiLoad(false);
+  if (ok) {
+    startPolling();
+    openSyncSettings(); // refresh modal to show connected state
+    showToast('🟢 Connected!', 'Live sync active.');
+  } else {
+    errEl.textContent = '❌ Could not connect. Check the URL and deployment settings.';
+    errEl.style.display = 'block';
+    API_URL = '';
+    localStorage.removeItem(API_STORAGE_KEY);
+  }
+  btn.textContent = '🔗 Connect'; btn.disabled = false;
+}
+
+function copySyncUrl() {
+  const url = document.getElementById('syncUrlDisplay').value;
+  navigator.clipboard.writeText(url).then(() => showToast('📋 URL Copied!', 'Share this URL with your team.'));
+}
+
+function apiDisconnect() {
+  if (!confirm('Disconnect from live sync? The dashboard will work locally only.')) return;
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = null;
+  API_URL = '';
+  localStorage.removeItem(API_STORAGE_KEY);
+  setSyncState('ok', 'Local only');
+  closeModal('syncSettingsModal');
+  showToast('🔌 Disconnected', 'Live sync off.');
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 const now = new Date();
 document.getElementById('todayStr').textContent = now.toLocaleDateString('en-ZA',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
@@ -3723,7 +4056,33 @@ loadData();
 loadContracts();
 updateGithubBtn();
 refreshAll();
-</script>
 
+(async function() {
+  // API_URL may already be baked in (from buildEditorHTML publish)
+  // Priority: baked-in URL > localStorage > show setup screen
+  const saved = localStorage.getItem(API_STORAGE_KEY) || '';
+  const effective = API_URL || saved;
+
+  if (!effective) {
+    // No URL anywhere — first-time admin setup
+    document.getElementById('setupScreen').style.display = 'flex';
+    return;
+  }
+  if (effective === '__local__') {
+    setSyncState('ok', 'Local only');
+    return;
+  }
+
+  // We have a URL — connect silently, no setup screen needed
+  API_URL = effective;
+  if (!saved || saved !== effective) {
+    localStorage.setItem(API_STORAGE_KEY, effective); // persist for future opens
+  }
+  setSyncState('syncing', 'Connecting…');
+  const ok = await apiLoad(false);
+  if (ok) startPolling();
+  else setSyncState('error', 'Sync failed — click 🔗 Live Sync to reconnect');
+})();
+</script>
 
 </body></html>
