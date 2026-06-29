@@ -321,49 +321,55 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 .ai-char-count{font-size:11px;color:var(--muted);padding:4px 0;}
 
 </style>
-<script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script>
 (function(){
   var SD='trade_payments_data',SC='trade_payments_contracts',SV='v3';
   var existing=localStorage.getItem(SD);
   var parsed=existing?JSON.parse(existing):null;
   // Only seed if localStorage is empty or older version
   if(!parsed||parsed.version!==SV){
-    localStorage.setItem(SD,JSON.stringify({version:SV,data:[{"id":1,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":false,"amount_due":7814300.47,"overdue":0,"comment":"","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8534},{"id":2,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0}],saved:new Date().toISOString()}));
+    localStorage.setItem(SD,JSON.stringify({version:SV,data:[{"id":300,"invoice":"INV-0717","invoice_date":"2026-02-20","due_date":"2026-02-23","client":"Puma Energy South Africa","reference":"Diesel Tanks","value":1207500,"paid":false,"amount_due":1207500,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":301,"invoice":"INV-1010","invoice_date":"2026-05-05","due_date":"2026-05-11","client":"Pamish Investments (Nasonti)","reference":"NSTEP002","value":1480713,"paid":false,"amount_due":1480713,"overdue":0,"comment":"AMOUNT STILL OWING","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":302,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":303,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":304,"invoice":"INV-1050","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPSER076 (80%)","value":7261447.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8400.7},{"id":305,"invoice":"INV-1051","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPWAL012 (20%)","value":2010004.1,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":306,"invoice":"INV-1052","invoice_date":"2026-06-25","due_date":"2026-06-25","client":"Foresight","reference":"RMPBLK084 (10%)","value":25119.71,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":307,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMAFEBLK01","value":7933653.54,"paid":false,"amount_due":7933653.54,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8302},{"id":308,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMKFTAFE01","value":9344793.51,"paid":false,"amount_due":9344793.51,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8307},{"id":309,"invoice":"To be invoiced","invoice_date":"2026-06-29","due_date":"2026-07-03","client":"Grinco","reference":"RMPBLK085 (80%)","value":7800000,"paid":false,"amount_due":7800000,"overdue":0,"comment":"Awaiting release","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0}],saved:new Date().toISOString()}));
     localStorage.setItem(SC,JSON.stringify([]));
   }
 })();
 </script></head>
-<body style="">
+<body>
 
 <!-- SETUP SCREEN -->
-<div class="setup-screen" id="setupScreen" style="display: none;">
+<div class="setup-screen" id="setupScreen" style="display:none;">
   <div class="setup-card">
     <div style="font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px;">💼 Trade Payments Dashboard</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:22px;">Multi-user · Google Sheets backed</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Real-time · Multi-user · Google Apps Script backed</div>
     <div class="setup-warn">
-      <strong>One-time Google Sheets connection required</strong><br><br>
-      1. Open the <strong>SheetsBackend.gs</strong> file you received alongside this dashboard<br>
-      2. Go to <strong>script.google.com</strong> → New Project → paste the script → Save<br>
-      3. Click <strong>Deploy → New Deployment → Web App</strong><br>
-      4. Execute as: <strong>Me</strong> &nbsp;|&nbsp; Who has access: <strong>Anyone</strong><br>
-      5. Click <strong>Deploy</strong> → copy the Web App URL → paste below
+      <strong>One-time setup (5 min) — done by admin only</strong><br><br>
+      1. Open a <strong>Google Sheet</strong> → copy its ID from the URL<br>
+         <span style="font-family:monospace;font-size:11px;color:var(--accent);">docs.google.com/spreadsheets/d/<strong>SHEET_ID</strong>/edit</span><br><br>
+      2. In the sheet → <strong>Extensions → Apps Script</strong><br>
+      3. Delete default code → click <strong>📋 Copy Script</strong> below → paste → <strong>Save</strong><br>
+      4. Click <strong>Deploy → New Deployment → Web App</strong><br>
+         Execute as: <strong>Me</strong> | Who has access: <strong>Anyone</strong><br>
+      5. Click <strong>Deploy → Authorise</strong> → copy the <code style="background:var(--surface2);padding:1px 5px;border-radius:3px;">/exec</code> URL
     </div>
-    <div style="margin-bottom:12px;">
-      <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px;">Apps Script Web App URL</label>
-      <input id="setupUrlInput" type="text" placeholder="https://script.google.com/macros/s/.../exec" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;">
+    <div class="field" style="margin-bottom:8px;">
+      <label>Google Sheet ID</label>
+      <input type="text" id="setupSheetId" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms" autocomplete="off" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;">
     </div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;">
-      <button class="btn btn-primary" onclick="connectGoogleSheets()" style="flex:1;" disabled="">⏳ Connecting...</button>
-      <button class="btn btn-outline" onclick="skipGoogleSheets()">Use Locally (no sharing)</button>
+    <div class="field" style="margin-bottom:12px;">
+      <label>Apps Script Web App URL</label>
+      <input type="text" id="setupApiUrl" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;">
     </div>
-    <div id="setupErr" style="font-size: 12px; color: var(--red); display: none; margin-top: 4px;">❌ Could not connect. Check the URL is correct and the Web App is deployed with "Anyone" access.</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="btn btn-primary" onclick="connectAPI()" style="flex:1;">🔗 Connect &amp; Load</button>
+      <button class="btn" onclick="copyAppsScript()" style="background:rgba(79,124,255,0.15);color:var(--accent);border:1px solid rgba(79,124,255,0.3);">📋 Copy Script</button>
+      <button class="btn btn-outline" onclick="apiSkip()">Use Locally</button>
+    </div>
+    <div id="setupErr" style="font-size:12px;color:var(--red);display:none;margin-top:6px;line-height:1.6;"></div>
     <div style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.7;">
-      <strong style="color:var(--text);">Use Locally</strong> — data stays in this browser only.<br>
-      <strong style="color:var(--text);">Connect</strong> — all team members connect to the same live Google Sheet.
+      <strong style="color:var(--text);">Already have a URL?</strong> Just paste it in and connect.<br>
+      <strong style="color:var(--text);">Use Locally</strong> — data stays in this browser only, no sharing.
     </div>
   </div>
 </div>
-
 <header>
   <div class="logo">💼</div>
   <div>
@@ -372,13 +378,14 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
   </div>
   <div class="header-right">
     <span class="save-indicator" id="saveIndicator">✓ Saved</span>
-    <div style="display:flex;align-items:center;gap:6px;" id="syncIndicator" title="Google Sheets sync status">
+    <div style="display:flex;align-items:center;gap:6px;cursor:pointer;" id="syncIndicator" onclick="openSyncSettings()" title="Click to configure live sharing">
       <span class="sync-dot" id="syncDot"></span>
-      <span class="sync-label" id="syncLabel">Saved ✓</span>
+      <span class="sync-label" id="syncLabel">Synced ✓</span>
     </div>
-    <button class="btn btn-outline btn-sm" onclick="openSyncModal()" id="syncBtn" title="Load latest data from GitHub">⬇ Sync</button>
+    <button class="btn btn-outline btn-sm" onclick="openSyncSettings()" id="liveSyncBtn" title="Configure live sharing / JSONBin">🔗 Live Sync</button>
+    <button class="btn btn-outline btn-sm" onclick="openSyncModal()" id="syncBtn" title="Load latest data from GitHub">⬇ GitHub Sync</button>
     <button class="btn btn-outline btn-sm" onclick="openGithubSettings()" id="githubSettingsBtn" title="Configure GitHub auto-publish" style="color: var(--green); border-color: rgba(34, 197, 94, 0.4);">✅ GitHub</button>
-    <div class="date-badge" id="todayBadge">📅 <span id="todayStr">Wed, 24 Jun 2026</span></div>
+    <div class="date-badge" id="todayBadge">📅 <span id="todayStr">Mon, 29 Jun 2026</span></div>
   </div>
 </header>
 
@@ -386,17 +393,17 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 
   <!-- KPI CARDS -->
   <div class="kpi-grid">
-    <div class="kpi total"><div class="kpi-icon">📄</div><div class="kpi-label">Total Invoiced</div><div class="kpi-value blue" id="kpi-total">R 16&nbsp;451&nbsp;214</div><div class="kpi-sub" id="kpi-count">2 invoices</div></div>
-    <div class="kpi paid"><div class="kpi-icon">✅</div><div class="kpi-label">Total Paid</div><div class="kpi-value green" id="kpi-paid">R 0</div><div class="kpi-sub" id="kpi-paid-count">0 invoices cleared</div></div>
-    <div class="kpi pending"><div class="kpi-icon">⏳</div><div class="kpi-label">Outstanding</div><div class="kpi-value amber" id="kpi-pending">R 16&nbsp;451&nbsp;214</div><div class="kpi-sub" id="kpi-pending-count">2 invoices pending</div></div>
-    <div class="kpi overdue"><div class="kpi-icon">🚨</div><div class="kpi-label">Overdue Amount</div><div class="kpi-value red" id="kpi-overdue">R 0</div><div class="kpi-sub" id="kpi-overdue-count">1 invoices need attention</div></div>
+    <div class="kpi total"><div class="kpi-icon">📄</div><div class="kpi-label">Total Invoiced</div><div class="kpi-value blue" id="kpi-total">R 53&nbsp;514&nbsp;446</div><div class="kpi-sub" id="kpi-count">10 invoices</div></div>
+    <div class="kpi paid"><div class="kpi-icon">✅</div><div class="kpi-label">Total Paid</div><div class="kpi-value green" id="kpi-paid">R 17&nbsp;110&nbsp;872</div><div class="kpi-sub" id="kpi-paid-count">4 invoices cleared</div></div>
+    <div class="kpi pending"><div class="kpi-icon">⏳</div><div class="kpi-label">Outstanding</div><div class="kpi-value amber" id="kpi-pending">R 36&nbsp;403&nbsp;574</div><div class="kpi-sub" id="kpi-pending-count">6 invoices pending</div></div>
+    <div class="kpi overdue"><div class="kpi-icon">🚨</div><div class="kpi-label">Overdue Amount</div><div class="kpi-value red" id="kpi-overdue">R 0</div><div class="kpi-sub" id="kpi-overdue-count">3 invoices need attention</div></div>
   </div>
 
   <!-- OVERDUE / UNPAID PANEL -->
   <div class="unpaid-box" id="unpaidBox">
     <div class="unpaid-box-header">
       <h2>🚨 Overdue &amp; Unpaid Invoices</h2>
-      <span id="unpaid-last-updated" style="font-size:11px;color:var(--muted);margin-left:auto;">Updated: 16:15</span>
+      <span id="unpaid-last-updated" style="font-size:11px;color:var(--muted);margin-left:auto;">Updated: 09:24</span>
       <div style="display:flex;gap:6px;align-items:center;margin-left:12px;">
         <button class="btn btn-outline btn-xs" onclick="resizeUnpaidPanel(200)" title="Compact">▲ Compact</button>
         <button class="btn btn-outline btn-xs" onclick="resizeUnpaidPanel(500)" title="Larger">↕ Larger</button>
@@ -406,12 +413,12 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       </div>
     </div>
     <div class="unpaid-summary">
-      <div class="unpaid-stat"><div class="unpaid-stat-label">Total Overdue Value</div><div class="unpaid-stat-value red" id="up-overdue-val">R 8&nbsp;636&nbsp;914</div></div>
-      <div class="unpaid-stat"><div class="unpaid-stat-label">Total Unpaid Value</div><div class="unpaid-stat-value amber" id="up-unpaid-val">R 16&nbsp;451&nbsp;214</div></div>
-      <div class="unpaid-stat"><div class="unpaid-stat-label">Overdue Invoices</div><div class="unpaid-stat-value orange" id="up-overdue-count">2 invoices</div></div>
-      <div class="unpaid-stat"><div class="unpaid-stat-label">Future / TBD</div><div class="unpaid-stat-value blue" id="up-pending-count">0 invoices</div></div>
+      <div class="unpaid-stat"><div class="unpaid-stat-label">Total Overdue Value</div><div class="unpaid-stat-value red" id="up-overdue-val">R 11&nbsp;325&nbsp;127</div></div>
+      <div class="unpaid-stat"><div class="unpaid-stat-label">Total Unpaid Value</div><div class="unpaid-stat-value amber" id="up-unpaid-val">R 36&nbsp;403&nbsp;574</div></div>
+      <div class="unpaid-stat"><div class="unpaid-stat-label">Overdue Invoices</div><div class="unpaid-stat-value orange" id="up-overdue-count">3 invoices</div></div>
+      <div class="unpaid-stat"><div class="unpaid-stat-label">Future / TBD</div><div class="unpaid-stat-value blue" id="up-pending-count">2 invoices</div></div>
     </div>
-    <div class="unpaid-table-wrap" id="unpaidTableWrap" style="max-height: 180px; overflow: auto;">
+    <div class="unpaid-table-wrap" id="unpaidTableWrap" style="max-height: none; overflow: visible;">
       <table class="unpaid-table">
         <thead>
           <tr>
@@ -427,7 +434,55 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
             <th>Action</th>
           </tr>
         </thead>
-        <tbody id="unpaidTableBody"><tr class="group-header red-group"><td colspan="10">🚨 Overdue &amp; Due Today — 2 invoice(s) · R 16&nbsp;451&nbsp;214</td></tr><tr class="overdue-row">
+        <tbody id="unpaidTableBody"><tr class="group-header red-group"><td colspan="10">🚨 Overdue &amp; Due Today — 3 invoice(s) · R 11&nbsp;325&nbsp;127</td></tr><tr class="overdue-row">
+      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="INV-0717">INV-0717</td>
+      <td><strong>Puma Energy South Africa</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="Diesel Tanks">Diesel Tanks</td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td style="font-size:12px;white-space:nowrap">2026-02-23</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px;">R 1&nbsp;050&nbsp;000</span></td>
+      <td class="val"><strong>R 1&nbsp;207&nbsp;500</strong></td>
+      <td style="white-space:nowrap"><span class="days-pill overdue">⚠ 126d overdue</span></td>
+      
+      <td class="comment-cell">
+        <div class="comment-display" id="cdisplay-300" onclick="startEditComment(300)" title="Click to edit comment">
+          <span class="comment-add-hint">+ add note</span>
+        </div>
+        <div class="comment-edit-wrap" id="cedit-300">
+          <input class="comment-input" id="cinput-300" type="text" value="" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(300);if(event.key==='Escape')cancelEditComment(300)">
+          <button class="comment-save-btn" onclick="saveComment(300)">✓</button>
+          <button class="comment-cancel-btn" onclick="cancelEditComment(300)">✕</button>
+        </div>
+      </td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(300)">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(300)">✏️</button>
+      </div></td>
+    </tr><tr class="overdue-row">
+      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="INV-1010">INV-1010</td>
+      <td><strong>Pamish Investments (Nasonti)</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="NSTEP002">NSTEP002</td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td style="font-size:12px;white-space:nowrap">2026-05-11</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px;">R 1&nbsp;287&nbsp;577</span></td>
+      <td class="val"><strong>R 1&nbsp;480&nbsp;713</strong></td>
+      <td style="white-space:nowrap"><span class="days-pill overdue">⚠ 49d overdue</span></td>
+      
+      <td class="comment-cell">
+        <div class="comment-display" id="cdisplay-301" onclick="startEditComment(301)" title="Click to edit comment">
+          <span class="comment-text has-comment" title="AMOUNT STILL OWING">AMOUNT STILL OWING</span>
+        </div>
+        <div class="comment-edit-wrap" id="cedit-301">
+          <input class="comment-input" id="cinput-301" type="text" value="AMOUNT STILL OWING" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(301);if(event.key==='Escape')cancelEditComment(301)">
+          <button class="comment-save-btn" onclick="saveComment(301)">✓</button>
+          <button class="comment-cancel-btn" onclick="cancelEditComment(301)">✕</button>
+        </div>
+      </td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(301)">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(301)">✏️</button>
+      </div></td>
+    </tr><tr class="overdue-row">
       <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="INV-1035">INV-1035</td>
       <td><strong>Pamish Investments (Nasonti)</strong></td>
       <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="NSTEP004">NSTEP004</td>
@@ -435,57 +490,105 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       <td style="font-size:12px;white-space:nowrap">2026-06-19</td>
       <td class="val"><span style="color:var(--muted);font-size:12px;">R 7&nbsp;510&nbsp;360</span></td>
       <td class="val"><strong>R 8&nbsp;636&nbsp;914</strong></td>
-      <td style="white-space:nowrap"><span class="days-pill overdue">⚠ 5d overdue</span></td>
+      <td style="white-space:nowrap"><span class="days-pill overdue">⚠ 10d overdue</span></td>
       
       <td class="comment-cell">
-        <div class="comment-display" id="cdisplay-2" onclick="startEditComment(2)" title="Click to edit comment">
+        <div class="comment-display" id="cdisplay-302" onclick="startEditComment(302)" title="Click to edit comment">
           <span class="comment-add-hint">+ add note</span>
         </div>
-        <div class="comment-edit-wrap" id="cedit-2">
-          <input class="comment-input" id="cinput-2" type="text" value="" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(2);if(event.key==='Escape')cancelEditComment(2)">
-          <button class="comment-save-btn" onclick="saveComment(2)">✓</button>
-          <button class="comment-cancel-btn" onclick="cancelEditComment(2)">✕</button>
+        <div class="comment-edit-wrap" id="cedit-302">
+          <input class="comment-input" id="cinput-302" type="text" value="" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(302);if(event.key==='Escape')cancelEditComment(302)">
+          <button class="comment-save-btn" onclick="saveComment(302)">✓</button>
+          <button class="comment-cancel-btn" onclick="cancelEditComment(302)">✕</button>
         </div>
       </td>
       <td><div class="actions-cell">
-        <button class="btn btn-green btn-xs" onclick="markPaid(2)">✓ Paid</button>
-        <button class="btn btn-amber btn-xs" onclick="openEdit(2)">✏️</button>
+        <button class="btn btn-green btn-xs" onclick="markPaid(302)">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(302)">✏️</button>
       </div></td>
-    </tr><tr class="overdue-row">
-      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="INV-1024">INV-1024</td>
-      <td><strong>Thungela</strong></td>
-      <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="AFFBLK011 (80%)">AFFBLK011 (80%)</td>
-      <td><span class="contract-tag">TGA COM 002 | RB…</span></td>
-      <td style="font-size:12px;white-space:nowrap">2026-06-24</td>
-      <td class="val"><span style="color:var(--muted);font-size:12px;">R 6&nbsp;795&nbsp;044</span></td>
-      <td class="val"><strong>R 7&nbsp;814&nbsp;300</strong></td>
-      <td style="white-space:nowrap"><span class="days-pill due-today">Due Today</span></td>
+    </tr><tr class="group-header amber-group"><td colspan="10">⏰ Due Within 7 Days — 1 invoice(s) · R 7&nbsp;800&nbsp;000</td></tr><tr class="due-soon-row">
+      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
+      <td><strong>Grinco</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="RMPBLK085 (80%)">RMPBLK085 (80%)</td>
+      <td><span class="contract-tag">003-GTC/CXP</span></td>
+      <td style="font-size:12px;white-space:nowrap">2026-07-03</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px;">R 6&nbsp;782&nbsp;609</span></td>
+      <td class="val"><strong>R 7&nbsp;800&nbsp;000</strong></td>
+      <td style="white-space:nowrap"><span class="days-pill due-soon">In 4d</span></td>
       
       <td class="comment-cell">
-        <div class="comment-display" id="cdisplay-1" onclick="startEditComment(1)" title="Click to edit comment">
-          <span class="comment-add-hint">+ add note</span>
+        <div class="comment-display" id="cdisplay-309" onclick="startEditComment(309)" title="Click to edit comment">
+          <span class="comment-text has-comment" title="Awaiting release">Awaiting release</span>
         </div>
-        <div class="comment-edit-wrap" id="cedit-1">
-          <input class="comment-input" id="cinput-1" type="text" value="" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(1);if(event.key==='Escape')cancelEditComment(1)">
-          <button class="comment-save-btn" onclick="saveComment(1)">✓</button>
-          <button class="comment-cancel-btn" onclick="cancelEditComment(1)">✕</button>
+        <div class="comment-edit-wrap" id="cedit-309">
+          <input class="comment-input" id="cinput-309" type="text" value="Awaiting release" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(309);if(event.key==='Escape')cancelEditComment(309)">
+          <button class="comment-save-btn" onclick="saveComment(309)">✓</button>
+          <button class="comment-cancel-btn" onclick="cancelEditComment(309)">✕</button>
         </div>
       </td>
       <td><div class="actions-cell">
-        <button class="btn btn-green btn-xs" onclick="markPaid(1)">✓ Paid</button>
-        <button class="btn btn-amber btn-xs" onclick="openEdit(1)">✏️</button>
+        <button class="btn btn-green btn-xs" onclick="markPaid(309)">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(309)">✏️</button>
+      </div></td>
+    </tr><tr class="group-header blue-group"><td colspan="10">⏳ Pending / Future — 2 invoice(s) · R 17&nbsp;278&nbsp;447</td></tr><tr class="pending-row">
+      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
+      <td><strong>Thungela</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="CMAFEBLK01">CMAFEBLK01</td>
+      <td><span class="contract-tag">TGA COM 003 | RB…</span></td>
+      <td style="font-size:12px;white-space:nowrap">2026-07-08</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px;">R 6&nbsp;898&nbsp;829</span></td>
+      <td class="val"><strong>R 7&nbsp;933&nbsp;654</strong></td>
+      <td style="white-space:nowrap"><span class="days-pill due-soon">In 9d</span></td>
+      
+      <td class="comment-cell">
+        <div class="comment-display" id="cdisplay-307" onclick="startEditComment(307)" title="Click to edit comment">
+          <span class="comment-add-hint">+ add note</span>
+        </div>
+        <div class="comment-edit-wrap" id="cedit-307">
+          <input class="comment-input" id="cinput-307" type="text" value="" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(307);if(event.key==='Escape')cancelEditComment(307)">
+          <button class="comment-save-btn" onclick="saveComment(307)">✓</button>
+          <button class="comment-cancel-btn" onclick="cancelEditComment(307)">✕</button>
+        </div>
+      </td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(307)">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(307)">✏️</button>
+      </div></td>
+    </tr><tr class="pending-row">
+      <td style="font-family:monospace;font-size:12px;max-width:140px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
+      <td><strong>Thungela</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:120px;overflow:hidden;text-overflow:ellipsis" title="CMKFTAFE01">CMKFTAFE01</td>
+      <td><span class="contract-tag">TGA COM 003 | RB…</span></td>
+      <td style="font-size:12px;white-space:nowrap">2026-07-08</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px;">R 8&nbsp;125&nbsp;907</span></td>
+      <td class="val"><strong>R 9&nbsp;344&nbsp;794</strong></td>
+      <td style="white-space:nowrap"><span class="days-pill due-soon">In 9d</span></td>
+      
+      <td class="comment-cell">
+        <div class="comment-display" id="cdisplay-308" onclick="startEditComment(308)" title="Click to edit comment">
+          <span class="comment-add-hint">+ add note</span>
+        </div>
+        <div class="comment-edit-wrap" id="cedit-308">
+          <input class="comment-input" id="cinput-308" type="text" value="" maxlength="200" placeholder="Add a note…" onkeydown="if(event.key==='Enter')saveComment(308);if(event.key==='Escape')cancelEditComment(308)">
+          <button class="comment-save-btn" onclick="saveComment(308)">✓</button>
+          <button class="comment-cancel-btn" onclick="cancelEditComment(308)">✕</button>
+        </div>
+      </td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(308)">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(308)">✏️</button>
       </div></td>
     </tr></tbody>
       </table>
     </div>
     <div class="unpaid-resize-handle" id="unpaidResizeHandle" title="Drag to resize">
-      <span id="unpaidRowCount" style="font-size:11px;color:var(--muted);">2 invoices shown</span>
+      <span id="unpaidRowCount" style="font-size:11px;color:var(--muted);">6 invoices shown</span>
       <span class="resize-dots">⠿ drag to resize</span>
     </div>
   </div>
 
   <!-- ALERTS -->
-  <div class="alerts" id="alertsBox"><div class="alert-item overdue"><span class="alert-icon">🚨</span><div class="alert-content"><strong>1 invoice(s) OVERDUE — Exposure: R 8&nbsp;636&nbsp;914</strong><small>INV-1035 (Pamish Investments (Nasonti), 5d)</small></div></div><div class="alert-item due-soon"><span class="alert-icon">⚠️</span><div class="alert-content"><strong>1 invoice(s) due TODAY</strong><small>INV-1024 (Thungela)</small></div></div></div>
+  <div class="alerts" id="alertsBox"><div class="alert-item overdue"><span class="alert-icon">🚨</span><div class="alert-content"><strong>3 invoice(s) OVERDUE — Exposure: R 11&nbsp;325&nbsp;127</strong><small>INV-0717 (Puma Energy South Africa, 126d) · INV-1010 (Pamish Investments (Nasonti), 49d) · INV-1035 (Pamish Investments (Nasonti), 10d)</small></div></div></div>
 
   <!-- CHARTS -->
   <div class="charts-row">
@@ -497,7 +600,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
   <div class="client-breakdown">
     <div class="client-breakdown-header">
       <h3>🏢 Outstanding by Client</h3>
-      <span class="count-badge" id="clientBreakdownBadge">2 clients</span>
+      <span class="count-badge" id="clientBreakdownBadge">4 clients</span>
       <div style="margin-left:auto;display:flex;gap:6px;align-items:center;">
         <label style="font-size:12px;color:var(--muted);">Sort:</label>
         <select id="clientBreakdownSort" onchange="renderClientBreakdown()" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:4px 8px;font-size:12px;outline:none;">
@@ -512,29 +615,53 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
         </label>
       </div>
     </div>
-    <div class="client-cards" id="clientCards"><div class="client-card has-overdue" onclick="filterTableByClient('Pamish Investments (Nasonti)')">
-      <div class="cc-name" title="Pamish Investments (Nasonti)">Pamish Investments (Nasonti)</div>
-      <div class="cc-amount overdue">R 8&nbsp;636&nbsp;914</div>
-      <div style="font-size:11px;color:var(--red);margin-top:2px;">Overdue: R 8&nbsp;636&nbsp;914</div>
-      <div class="cc-meta">
-        <span>1 invoice</span>
-        <span>53% of total</span>
-        <span class="cc-tag overdue">⚠ 1 overdue</span>
-      </div>
-      <div class="cc-bar-track">
-        <div class="cc-bar-fill overdue" style="width:53%"></div>
-      </div>
-    </div><div class="client-card all-clear" onclick="filterTableByClient('Thungela')">
+    <div class="client-cards" id="clientCards"><div class="client-card all-clear" onclick="filterTableByClient('Thungela')">
       <div class="cc-name" title="Thungela">Thungela</div>
-      <div class="cc-amount ">R 7&nbsp;814&nbsp;300</div>
+      <div class="cc-amount ">R 17&nbsp;278&nbsp;447</div>
       
       <div class="cc-meta">
-        <span>1 invoice</span>
+        <span>2 invoices</span>
         <span>47% of total</span>
         <span class="cc-tag clear">✓ On track</span>
       </div>
       <div class="cc-bar-track">
         <div class="cc-bar-fill " style="width:47%"></div>
+      </div>
+    </div><div class="client-card has-overdue" onclick="filterTableByClient('Pamish Investments (Nasonti)')">
+      <div class="cc-name" title="Pamish Investments (Nasonti)">Pamish Investments (Nasonti)</div>
+      <div class="cc-amount overdue">R 10&nbsp;117&nbsp;627</div>
+      <div style="font-size:11px;color:var(--red);margin-top:2px;">Overdue: R 10&nbsp;117&nbsp;627</div>
+      <div class="cc-meta">
+        <span>2 invoices</span>
+        <span>28% of total</span>
+        <span class="cc-tag overdue">⚠ 2 overdue</span>
+      </div>
+      <div class="cc-bar-track">
+        <div class="cc-bar-fill overdue" style="width:28%"></div>
+      </div>
+    </div><div class="client-card all-clear" onclick="filterTableByClient('Grinco')">
+      <div class="cc-name" title="Grinco">Grinco</div>
+      <div class="cc-amount ">R 7&nbsp;800&nbsp;000</div>
+      
+      <div class="cc-meta">
+        <span>1 invoice</span>
+        <span>21% of total</span>
+        <span class="cc-tag clear">✓ On track</span>
+      </div>
+      <div class="cc-bar-track">
+        <div class="cc-bar-fill " style="width:21%"></div>
+      </div>
+    </div><div class="client-card has-overdue" onclick="filterTableByClient('Puma Energy South Africa')">
+      <div class="cc-name" title="Puma Energy South Africa">Puma Energy South Africa</div>
+      <div class="cc-amount overdue">R 1&nbsp;207&nbsp;500</div>
+      <div style="font-size:11px;color:var(--red);margin-top:2px;">Overdue: R 1&nbsp;207&nbsp;500</div>
+      <div class="cc-meta">
+        <span>1 invoice</span>
+        <span>3% of total</span>
+        <span class="cc-tag overdue">⚠ 1 overdue</span>
+      </div>
+      <div class="cc-bar-track">
+        <div class="cc-bar-fill overdue" style="width:3%"></div>
       </div>
     </div></div>
   </div>
@@ -625,7 +752,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
   <div class="table-section">
     <div class="table-header">
       <h3>All Invoices</h3>
-      <span class="count-badge" id="tableCount">2 records</span>
+      <span class="count-badge" id="tableCount">10 records</span>
       <input class="search-box" type="text" id="searchInput" placeholder="🔍  Search…" oninput="clearContractFilter(); renderTable()">
       <div class="filters">
         <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
@@ -664,6 +791,40 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
           </tr>
         </thead>
         <tbody id="invoiceTable"><tr>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-0717">INV-0717</td>
+      <td><strong>Puma Energy South Africa</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="Diesel Tanks">Diesel Tanks</td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td style="color:var(--muted);font-size:12px">2026-02-20</td>
+      <td style="font-size:12px">2026-02-23</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 1&nbsp;050&nbsp;000</span></td>
+      <td class="val"><strong>R 1&nbsp;207&nbsp;500</strong></td>
+      <td><span class="badge overdue">🚨 Overdue</span></td>
+      <td><span class="days-pill overdue">126d overdue</span></td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(300)" title="Mark as Paid">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(300)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(300)" title="Delete">🗑</button>
+      </div></td>
+    </tr><tr>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-1010">INV-1010</td>
+      <td><strong>Pamish Investments (Nasonti)</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="NSTEP002">NSTEP002</td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td style="color:var(--muted);font-size:12px">2026-05-05</td>
+      <td style="font-size:12px">2026-05-11</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 1&nbsp;287&nbsp;577</span></td>
+      <td class="val"><strong>R 1&nbsp;480&nbsp;713</strong></td>
+      <td><span class="badge overdue">🚨 Overdue</span></td>
+      <td><span class="days-pill overdue">49d overdue</span></td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(301)" title="Mark as Paid">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(301)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(301)" title="Delete">🗑</button>
+      </div></td>
+    </tr><tr>
       <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-1035">INV-1035</td>
       <td><strong>Pamish Investments (Nasonti)</strong></td>
       <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="NSTEP004">NSTEP004</td>
@@ -673,12 +834,12 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       <td class="val"><span style="color:var(--muted);font-size:12px">R 7&nbsp;510&nbsp;360</span></td>
       <td class="val"><strong>R 8&nbsp;636&nbsp;914</strong></td>
       <td><span class="badge overdue">🚨 Overdue</span></td>
-      <td><span class="days-pill overdue">5d overdue</span></td>
+      <td><span class="days-pill overdue">10d overdue</span></td>
       <td><span style="color:var(--muted);font-size:11px">—</span></td>
       <td><div class="actions-cell">
-        <button class="btn btn-green btn-xs" onclick="markPaid(2)" title="Mark as Paid">✓ Paid</button>
-        <button class="btn btn-amber btn-xs" onclick="openEdit(2)" title="Edit">✏️</button>
-        <button class="btn btn-red btn-xs" onclick="confirmDelete(2)" title="Delete">🗑</button>
+        <button class="btn btn-green btn-xs" onclick="markPaid(302)" title="Mark as Paid">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(302)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(302)" title="Delete">🗑</button>
       </div></td>
     </tr><tr>
       <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-1024">INV-1024</td>
@@ -689,13 +850,115 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
       <td style="font-size:12px">2026-06-24</td>
       <td class="val"><span style="color:var(--muted);font-size:12px">R 6&nbsp;795&nbsp;044</span></td>
       <td class="val"><strong>R 7&nbsp;814&nbsp;300</strong></td>
-      <td><span class="badge due-soon">⚡ Due Soon</span></td>
-      <td><span class="days-pill due-today">Due Today</span></td>
-      <td><span style="font-size:12px;color:var(--muted)">8,534t</span></td>
+      <td><span class="badge paid">✓ Paid</span></td>
+      <td></td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
       <td><div class="actions-cell">
-        <button class="btn btn-green btn-xs" onclick="markPaid(1)" title="Mark as Paid">✓ Paid</button>
-        <button class="btn btn-amber btn-xs" onclick="openEdit(1)" title="Edit">✏️</button>
-        <button class="btn btn-red btn-xs" onclick="confirmDelete(1)" title="Delete">🗑</button>
+        
+        <button class="btn btn-amber btn-xs" onclick="openEdit(303)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(303)" title="Delete">🗑</button>
+      </div></td>
+    </tr><tr>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-1052">INV-1052</td>
+      <td><strong>Foresight</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="RMPBLK084 (10%)">RMPBLK084 (10%)</td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td style="color:var(--muted);font-size:12px">2026-06-25</td>
+      <td style="font-size:12px">2026-06-25</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 21&nbsp;843</span></td>
+      <td class="val"><strong>R 25&nbsp;120</strong></td>
+      <td><span class="badge paid">✓ Paid</span></td>
+      <td></td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td><div class="actions-cell">
+        
+        <button class="btn btn-amber btn-xs" onclick="openEdit(306)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(306)" title="Delete">🗑</button>
+      </div></td>
+    </tr><tr>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-1050">INV-1050</td>
+      <td><strong>Grinco</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="RMPSER076 (80%)">RMPSER076 (80%)</td>
+      <td><span class="contract-tag" title="003-GTC/CXP">003-GTC/CXP</span></td>
+      <td style="color:var(--muted);font-size:12px">2026-06-25</td>
+      <td style="font-size:12px">2026-07-01</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 6&nbsp;314&nbsp;302</span></td>
+      <td class="val"><strong>R 7&nbsp;261&nbsp;447</strong></td>
+      <td><span class="badge paid">✓ Paid</span></td>
+      <td></td>
+      <td><span style="font-size:12px;color:var(--muted)">8,400.7t</span></td>
+      <td><div class="actions-cell">
+        
+        <button class="btn btn-amber btn-xs" onclick="openEdit(304)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(304)" title="Delete">🗑</button>
+      </div></td>
+    </tr><tr>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="INV-1051">INV-1051</td>
+      <td><strong>Grinco</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="RMPWAL012 (20%)">RMPWAL012 (20%)</td>
+      <td><span class="contract-tag" title="003-GTC/CXP">003-GTC/CXP</span></td>
+      <td style="color:var(--muted);font-size:12px">2026-06-25</td>
+      <td style="font-size:12px">2026-07-01</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 1&nbsp;747&nbsp;830</span></td>
+      <td class="val"><strong>R 2&nbsp;010&nbsp;004</strong></td>
+      <td><span class="badge paid">✓ Paid</span></td>
+      <td></td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td><div class="actions-cell">
+        
+        <button class="btn btn-amber btn-xs" onclick="openEdit(305)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(305)" title="Delete">🗑</button>
+      </div></td>
+    </tr><tr>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
+      <td><strong>Grinco</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="RMPBLK085 (80%)">RMPBLK085 (80%)</td>
+      <td><span class="contract-tag" title="003-GTC/CXP">003-GTC/CXP</span></td>
+      <td style="color:var(--muted);font-size:12px">2026-06-29</td>
+      <td style="font-size:12px">2026-07-03</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 6&nbsp;782&nbsp;609</span></td>
+      <td class="val"><strong>R 7&nbsp;800&nbsp;000</strong></td>
+      <td><span class="badge due-soon">⚡ Due Soon</span></td>
+      <td><span class="days-pill due-soon">In 4d</span></td>
+      <td><span style="color:var(--muted);font-size:11px">—</span></td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(309)" title="Mark as Paid">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(309)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(309)" title="Delete">🗑</button>
+      </div></td>
+    </tr><tr>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
+      <td><strong>Thungela</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="CMAFEBLK01">CMAFEBLK01</td>
+      <td><span class="contract-tag" title="TGA COM 003 | RB2 FCA (June)">TGA COM 003 | RB2 …</span></td>
+      <td style="color:var(--muted);font-size:12px">2026-06-19</td>
+      <td style="font-size:12px">2026-07-08</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 6&nbsp;898&nbsp;829</span></td>
+      <td class="val"><strong>R 7&nbsp;933&nbsp;654</strong></td>
+      <td><span class="badge pending">⏳ Pending</span></td>
+      <td><span class="days-pill ok">In 9d</span></td>
+      <td><span style="font-size:12px;color:var(--muted)">8,302t</span></td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(307)" title="Mark as Paid">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(307)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(307)" title="Delete">🗑</button>
+      </div></td>
+    </tr><tr>
+      <td style="font-family:monospace;font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis" title="To be invoiced">To be invoiced</td>
+      <td><strong>Thungela</strong></td>
+      <td style="color:var(--muted);font-size:12px;max-width:130px;overflow:hidden;text-overflow:ellipsis" title="CMKFTAFE01">CMKFTAFE01</td>
+      <td><span class="contract-tag" title="TGA COM 003 | RB2 FCA (June)">TGA COM 003 | RB2 …</span></td>
+      <td style="color:var(--muted);font-size:12px">2026-06-19</td>
+      <td style="font-size:12px">2026-07-08</td>
+      <td class="val"><span style="color:var(--muted);font-size:12px">R 8&nbsp;125&nbsp;907</span></td>
+      <td class="val"><strong>R 9&nbsp;344&nbsp;794</strong></td>
+      <td><span class="badge pending">⏳ Pending</span></td>
+      <td><span class="days-pill ok">In 9d</span></td>
+      <td><span style="font-size:12px;color:var(--muted)">8,307t</span></td>
+      <td><div class="actions-cell">
+        <button class="btn btn-green btn-xs" onclick="markPaid(308)" title="Mark as Paid">✓ Paid</button>
+        <button class="btn btn-amber btn-xs" onclick="openEdit(308)" title="Edit">✏️</button>
+        <button class="btn btn-red btn-xs" onclick="confirmDelete(308)" title="Delete">🗑</button>
       </div></td>
     </tr></tbody>
       </table>
@@ -810,7 +1073,67 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 
       <!-- Invoice rows — pre-populated, each with a note field -->
       <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;margin-bottom:8px;">Invoices — add a note to include in the summary</div>
-      <div id="summaryInvoiceRows" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;padding-right:4px;margin-bottom:18px;"></div>
+      <div id="summaryInvoiceRows" style="display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;padding-right:4px;margin-bottom:18px;"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;font-weight:600;margin-top:10px;margin-bottom:4px;">🚨 Overdue &amp; Due Today</div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--red);">
+      <div>
+        <div style="font-size:12px;font-weight:700;">Puma Energy South Africa</div>
+        <div style="font-size:11px;color:var(--muted);font-family:monospace;">INV-0717</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;">ZAR 1&nbsp;207&nbsp;500</div>
+        <div style="font-size:11px;color:var(--red);font-weight:600;">126d overdue</div>
+      </div>
+      <input type="text" data-id="300" data-client="Puma Energy South Africa" data-inv="INV-0717" data-val="ZAR 1&nbsp;207&nbsp;500" data-due="2026/02/23" data-days="126d overdue" data-group="overdue" value="" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(300,this.value);rebuildSummaryPreview()">
+    </div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--red);">
+      <div>
+        <div style="font-size:12px;font-weight:700;">Pamish Investments (Nasonti)</div>
+        <div style="font-size:11px;color:var(--muted);font-family:monospace;">INV-1010</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;">ZAR 1&nbsp;480&nbsp;713</div>
+        <div style="font-size:11px;color:var(--red);font-weight:600;">49d overdue</div>
+      </div>
+      <input type="text" data-id="301" data-client="Pamish Investments (Nasonti)" data-inv="INV-1010" data-val="ZAR 1&nbsp;480&nbsp;713" data-due="2026/05/11" data-days="49d overdue" data-group="overdue" value="AMOUNT STILL OWING" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(301,this.value);rebuildSummaryPreview()">
+    </div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--red);">
+      <div>
+        <div style="font-size:12px;font-weight:700;">Pamish Investments (Nasonti)</div>
+        <div style="font-size:11px;color:var(--muted);font-family:monospace;">INV-1035</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;">ZAR 8&nbsp;636&nbsp;914</div>
+        <div style="font-size:11px;color:var(--red);font-weight:600;">10d overdue</div>
+      </div>
+      <input type="text" data-id="302" data-client="Pamish Investments (Nasonti)" data-inv="INV-1035" data-val="ZAR 8&nbsp;636&nbsp;914" data-due="2026/06/19" data-days="10d overdue" data-group="overdue" value="" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(302,this.value);rebuildSummaryPreview()">
+    </div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;font-weight:600;margin-top:10px;margin-bottom:4px;">⏰ Due Within 14 Days</div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--amber);">
+      <div>
+        <div style="font-size:12px;font-weight:700;">Grinco</div>
+        <div style="font-size:11px;color:var(--muted);font-family:monospace;">RMPBLK085 (80%)</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;">ZAR 7&nbsp;800&nbsp;000</div>
+        <div style="font-size:11px;color:var(--amber);font-weight:600;">Due 2026/07/03</div>
+      </div>
+      <input type="text" data-id="309" data-client="Grinco" data-inv="RMPBLK085 (80%)" data-val="ZAR 7&nbsp;800&nbsp;000" data-due="2026/07/03" data-days="Due 2026/07/03" data-group="due-soon" value="Awaiting release" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(309,this.value);rebuildSummaryPreview()">
+    </div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--amber);">
+      <div>
+        <div style="font-size:12px;font-weight:700;">Thungela</div>
+        <div style="font-size:11px;color:var(--muted);font-family:monospace;">CMAFEBLK01</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;">ZAR 7&nbsp;933&nbsp;654</div>
+        <div style="font-size:11px;color:var(--amber);font-weight:600;">Due 2026/07/08</div>
+      </div>
+      <input type="text" data-id="307" data-client="Thungela" data-inv="CMAFEBLK01" data-val="ZAR 7&nbsp;933&nbsp;654" data-due="2026/07/08" data-days="Due 2026/07/08" data-group="due-soon" value="" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(307,this.value);rebuildSummaryPreview()">
+    </div><div style="display:grid;grid-template-columns:200px 120px 1fr;gap:8px;align-items:center;padding:7px 10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--amber);">
+      <div>
+        <div style="font-size:12px;font-weight:700;">Thungela</div>
+        <div style="font-size:11px;color:var(--muted);font-family:monospace;">CMKFTAFE01</div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;">ZAR 9&nbsp;344&nbsp;794</div>
+        <div style="font-size:11px;color:var(--amber);font-weight:600;">Due 2026/07/08</div>
+      </div>
+      <input type="text" data-id="308" data-client="Thungela" data-inv="CMKFTAFE01" data-val="ZAR 9&nbsp;344&nbsp;794" data-due="2026/07/08" data-days="Due 2026/07/08" data-group="due-soon" value="" placeholder="Add note (optional)…" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;width:100%;" oninput="saveSummaryNote(308,this.value);rebuildSummaryPreview()">
+    </div></div>
 
       <!-- Preview -->
       <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;margin-bottom:6px;">Preview</div>
@@ -888,6 +1211,45 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- LIVE SYNC MODAL -->
+<div class="modal-overlay" id="syncSettingsModal">
+  <div class="modal" style="max-width:520px;">
+    <h2>🔗 Live Sync Settings</h2>
+    <div id="syncNotConnected" style="display: none;">
+      <div class="sub">Connect to Google Apps Script to share this dashboard in real time.</div>
+      <div class="field" style="margin-top:12px;margin-bottom:8px;">
+        <label>Apps Script Web App URL</label>
+        <input type="text" id="syncApiUrlInput" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off">
+      </div>
+      <div id="syncModalErr" style="font-size:12px;color:var(--red);display:none;margin-bottom:10px;"></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('syncSettingsModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="connectFromModal()">🔗 Connect</button>
+      </div>
+    </div>
+    <div id="syncConnected" style="display: block;">
+      <div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+        <div style="font-weight:700;color:var(--green);margin-bottom:4px;">🟢 Live Sync Active</div>
+        <div style="font-size:12px;color:var(--muted);" id="syncConnectedUrl">https://script.google.com/macros/s/AKfycbxWRw_l4EFTvcIaPFEhea1uTlssOCjcg7sd5iwyug0h8qJRb1-RFsS3XLIeGHxXv5-_8A/exec</div>
+      </div>
+      <div class="field" style="margin-bottom:14px;">
+        <label>Share this dashboard file + URL with your team</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="syncUrlDisplay" readonly="" style="flex:1;color:var(--accent);font-size:12px;cursor:pointer;" onclick="this.select()">
+          <button class="btn btn-primary btn-sm" onclick="copySyncUrl()">📋 Copy URL</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:5px;">Anyone with this HTML file and URL connects to the same live data.</div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-outline btn-sm" onclick="apiLoad(false)" style="flex:1;">↻ Sync Now</button>
+        <button class="btn btn-red btn-sm" onclick="apiDisconnect()" style="flex:1;">✕ Disconnect</button>
+      </div>
+      <div class="modal-footer" style="margin-top:14px;">
+        <button class="btn btn-outline" onclick="closeModal('syncSettingsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- GITHUB SETTINGS MODAL -->
 <div class="modal-overlay" id="githubSettingsModal">
   <div class="modal" style="max-width:560px;">
@@ -970,7 +1332,7 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
     </div>
 
     <div id="publishProgress" style="margin-bottom: 18px; display: block;">
-      <div style="display:flex;flex-direction:column;gap:10px;" id="publishSteps"><div style="font-size: 13px; display: flex; align-items: center; gap: 8px;"><span>✅</span><span>index.html ready ✓</span></div><div style="font-size: 13px; display: flex; align-items: center; gap: 8px;"><span>✅</span><span>Stakeholder Viewer published ✓</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:10px;" id="publishSteps"></div>
     </div>
 
     <div id="publishResult" style="display:none;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:14px 16px;margin-bottom:16px;">
@@ -1066,18 +1428,18 @@ tbody td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"><div class="t-title" id="toastTitle">✅ Connected!</div><div id="toastMsg">Live data loaded from Google Sheets.</div></div>
+<div class="toast" id="toast"><div class="t-title" id="toastTitle">📋 Copied!</div><div id="toastMsg">Paste into WhatsApp, Teams or email.</div></div>
 
 <script>
 // ─── SEED DATA ───────────────────────────────────────────────────────────────
-const SEED = [{"id":1,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":false,"amount_due":7814300.47,"overdue":0,"comment":"","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8534},{"id":2,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0}];
+const SEED = [{"id":300,"invoice":"INV-0717","invoice_date":"2026-02-20","due_date":"2026-02-23","client":"Puma Energy South Africa","reference":"Diesel Tanks","value":1207500,"paid":false,"amount_due":1207500,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":301,"invoice":"INV-1010","invoice_date":"2026-05-05","due_date":"2026-05-11","client":"Pamish Investments (Nasonti)","reference":"NSTEP002","value":1480713,"paid":false,"amount_due":1480713,"overdue":0,"comment":"AMOUNT STILL OWING","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":302,"invoice":"INV-1035","invoice_date":"2026-06-15","due_date":"2026-06-19","client":"Pamish Investments (Nasonti)","reference":"NSTEP004","value":8636914,"paid":false,"amount_due":8636914,"overdue":0,"comment":"","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":303,"invoice":"INV-1024","invoice_date":"2026-06-02","due_date":"2026-06-24","client":"Thungela","reference":"AFFBLK011 (80%)","value":7814300.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"TGA COM 002 | RB3 FCA (May)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":304,"invoice":"INV-1050","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPSER076 (80%)","value":7261447.47,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8400.7},{"id":305,"invoice":"INV-1051","invoice_date":"2026-06-25","due_date":"2026-07-01","client":"Grinco","reference":"RMPWAL012 (20%)","value":2010004.1,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":306,"invoice":"INV-1052","invoice_date":"2026-06-25","due_date":"2026-06-25","client":"Foresight","reference":"RMPBLK084 (10%)","value":25119.71,"paid":true,"amount_due":0,"overdue":0,"comment":"Paid 2026/06/26","contract":"","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0},{"id":307,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMAFEBLK01","value":7933653.54,"paid":false,"amount_due":7933653.54,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8302},{"id":308,"invoice":"To be invoiced","invoice_date":"2026-06-19","due_date":"2026-07-08","client":"Thungela","reference":"CMKFTAFE01","value":9344793.51,"paid":false,"amount_due":9344793.51,"overdue":0,"comment":"","contract":"TGA COM 003 | RB2 FCA (June)","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":8307},{"id":309,"invoice":"To be invoiced","invoice_date":"2026-06-29","due_date":"2026-07-03","client":"Grinco","reference":"RMPBLK085 (80%)","value":7800000,"paid":false,"amount_due":7800000,"overdue":0,"comment":"Awaiting release","contract":"003-GTC/CXP","contract_tons_total":0,"contract_tons_delivered":0,"invoice_tons":0}];
 
 const STORAGE_KEY = 'trade_payments_data';
 const STORAGE_VER = 'v3';
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
 let DATA = [];
-let nextId = 200;
+let nextId = 300;
 let currentFilter = 'all';
 let sortKey = 'due_date';
 let sortDir = 1;
@@ -3544,55 +3906,123 @@ function refreshAll() {
   renderContracts();
 }
 
-// ─── GOOGLE SHEETS BACKEND ────────────────────────────────────────────────────
-const GS_URL_KEY = 'trade_payments_gs_url';
-let GS_URL = '';
+// ─── APPS SCRIPT BACKEND ─────────────────────────────────────────────────────
+const API_STORAGE_KEY = 'trade_payments_api_url';
+let API_URL = '';
 
-function getGSUrl() {
-  try { return localStorage.getItem(GS_URL_KEY) || ''; } catch(e) { return ''; }
+// ── Embedded Apps Script (copy this into Google Apps Script) ─────────────────
+const APPS_SCRIPT = `// Trade Payments Dashboard — Apps Script Backend
+// SETUP:
+// 1. Open your Google Sheet → Extensions → Apps Script
+// 2. Delete all existing code and paste this entire script
+// 3. Save (Ctrl+S) → Deploy → New Deployment → Web App
+//    Execute as: Me | Who has access: Anyone
+// 4. Click Deploy → Authorise → copy the /exec URL
+
+function doGet(e) {
+  return respond(loadAll());
 }
 
+function doPost(e) {
+  try {
+    const d = JSON.parse(e.postData.contents);
+    if (d.action === 'save') { saveAll(d.invoices, d.contracts); return respond({ ok: true }); }
+  } catch(err) { return respond({ ok: false, error: err.toString() }); }
+}
+
+function respond(data) {
+  return ContentService.createTextOutput(JSON.stringify(data)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function loadAll() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  return {
+    invoices:  loadSheet(ss, 'invoices'),
+    contracts: loadSheet(ss, 'contracts')
+  };
+}
+
+function loadSheet(ss, name) {
+  let sh = ss.getSheetByName(name);
+  if (!sh || sh.getLastRow() < 2) return [];
+  return sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues()
+    .map(row => { try { return JSON.parse(row[0] || 'null'); } catch(e) { return null; } })
+    .filter(r => r !== null);
+}
+
+function saveAll(invoices, contracts) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  writeSheet(ss, 'invoices',  invoices  || []);
+  writeSheet(ss, 'contracts', contracts || []);
+}
+
+function writeSheet(ss, name, arr) {
+  let sh = ss.getSheetByName(name);
+  if (!sh) sh = ss.insertSheet(name);
+  sh.clearContents();
+  sh.getRange(1, 1).setValue('data');
+  if (arr.length > 0) {
+    sh.getRange(2, 1, arr.length, 1).setValues(arr.map(item => [JSON.stringify(item)]));
+  }
+}`;
+
+// ── Copy Apps Script to clipboard ────────────────────────────
+function copyAppsScript() {
+  navigator.clipboard.writeText(APPS_SCRIPT).then(() => {
+    showToast('📋 Script Copied!', 'Paste into Google Apps Script editor.');
+  });
+}
+
+// ── Sync state indicator ──────────────────────────────────────
 function setSyncState(state, text) {
   const dot   = document.getElementById('syncDot');
   const label = document.getElementById('syncLabel');
   if (!dot || !label) return;
-  dot.className = 'sync-dot' + (state === 'syncing' ? ' syncing' : state === 'error' ? ' error' : '');
+  dot.className = 'sync-dot' + (state==='syncing'?' syncing':state==='error'?' error':'');
   label.textContent = text;
 }
 
-async function gsLoad() {
-  if (!GS_URL) return false;
-  setSyncState('syncing', 'Loading...');
+// ── syncAll — called after every mutation ─────────────────────
+function syncAll() {
+  saveData(true);
+  saveContracts();
+  apiSave();
+}
+
+// ── Load from Apps Script ─────────────────────────────────────
+async function apiLoad(silent) {
+  if (!API_URL) return false;
+  if (!silent) setSyncState('syncing', 'Loading…');
   try {
-    const r = await fetch(GS_URL + '?t=' + Date.now(), { redirect: 'follow' });
+    const r = await fetch(API_URL, { redirect: 'follow' });
     const d = await r.json();
     if (d.invoices !== undefined) {
-      // Load invoices
       DATA.length = 0;
       (d.invoices || []).forEach(r => DATA.push(r));
-      nextId = DATA.length ? Math.max(...DATA.map(r => r.id || 0)) + 1 : 1;
-      // Load contracts
+      nextId = DATA.length ? Math.max(...DATA.map(r => r.id||0)) + 1 : 300;
       CONTRACTS.length = 0;
       (d.contracts || []).forEach(c => CONTRACTS.push(c));
-      nextContractId = CONTRACTS.length ? Math.max(...CONTRACTS.map(c => c.id || 0)) + 1 : 1;
-      // Also mirror to localStorage as fallback
+      nextContractId = CONTRACTS.length ? Math.max(...CONTRACTS.map(c => c.id||0)) + 1 : 1;
       saveData(true);
       saveContracts();
       refreshAll();
       setSyncState('ok', 'Synced ✓');
       return true;
     }
+    throw new Error('Unexpected response');
   } catch(e) {
     setSyncState('error', 'Sync failed');
+    console.warn('apiLoad:', e.message);
+    return false;
   }
-  return false;
 }
 
-async function gsSave() {
-  if (!GS_URL) return;
-  setSyncState('syncing', 'Saving...');
+// ── Save to Apps Script ───────────────────────────────────────
+async function apiSave() {
+  if (!API_URL) return;
+  setSyncState('syncing', 'Saving…');
   try {
-    await fetch(GS_URL, {
+    await fetch(API_URL, {
       method: 'POST',
       redirect: 'follow',
       headers: { 'Content-Type': 'text/plain' },
@@ -3601,47 +4031,106 @@ async function gsSave() {
     setSyncState('ok', 'Saved ✓');
   } catch(e) {
     setSyncState('error', 'Save failed');
+    console.warn('apiSave:', e.message);
   }
 }
 
-// Called after every mutation — saves to both localStorage AND Google Sheets
-function syncAll() {
-  saveData(true);
-  saveContracts();
-  gsSave();
+// ── Auto-poll every 30 seconds ────────────────────────────────
+let pollTimer = null;
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(() => apiLoad(true), 30000);
 }
 
-async function connectGoogleSheets() {
-  const url = document.getElementById('setupUrlInput').value.trim();
-  const errEl = document.getElementById('setupErr');
+// ── Setup screen connect ──────────────────────────────────────
+async function connectAPI() {
+  const sheetId = document.getElementById('setupSheetId').value.trim();
+  const url     = document.getElementById('setupApiUrl').value.trim();
+  const errEl   = document.getElementById('setupErr');
   errEl.style.display = 'none';
-  if (!url || !url.startsWith('https://script.google.com')) {
-    errEl.textContent = '⚠ Please paste a valid Apps Script Web App URL.';
+  if (!url || !url.includes('script.google.com')) {
+    errEl.textContent = '⚠ Please paste your Apps Script Web App URL (ends in /exec).';
     errEl.style.display = 'block';
     return;
   }
-  GS_URL = url;
-  localStorage.setItem(GS_URL_KEY, url);
-  const btn = document.querySelector('#setupScreen .btn-primary');
-  btn.textContent = '⏳ Connecting...';
-  btn.disabled = true;
-  const ok = await gsLoad();
+  API_URL = url;
+  localStorage.setItem(API_STORAGE_KEY, url);
+  const btn = document.querySelector('#setupStep1 .btn-primary');
+  if (btn) { btn.textContent = '⏳ Connecting…'; btn.disabled = true; }
+  const ok = await apiLoad(false);
   if (ok) {
     document.getElementById('setupScreen').style.display = 'none';
-    showToast('✅ Connected!', 'Live data loaded from Google Sheets.');
+    startPolling();
+    showToast('🟢 Connected!', 'Live data loaded. Auto-syncing every 30s.');
   } else {
-    errEl.textContent = '❌ Could not connect. Check the URL is correct and the Web App is deployed with "Anyone" access.';
+    errEl.textContent = '❌ Could not connect. Check: (1) URL ends in /exec not /dev, (2) Who has access = Anyone, (3) you clicked Authorise when deploying.';
     errEl.style.display = 'block';
-    btn.textContent = '🔗 Connect & Load';
-    btn.disabled = false;
+    API_URL = '';
+    localStorage.removeItem(API_STORAGE_KEY);
   }
+  if (btn) { btn.textContent = '🔗 Connect & Load'; btn.disabled = false; }
 }
 
-function skipGoogleSheets() {
+function apiSkip() {
   document.getElementById('setupScreen').style.display = 'none';
-  setSyncState('ok', 'Local');
-  // Don't save GS_URL so it won't show the setup screen again until cleared
-  localStorage.setItem(GS_URL_KEY, '__local__');
+  localStorage.setItem(API_STORAGE_KEY, '__local__');
+  setSyncState('ok', 'Local only');
+}
+
+// ── Settings modal ────────────────────────────────────────────
+function openSyncSettings() {
+  const url = localStorage.getItem(API_STORAGE_KEY) || '';
+  const connected = url && url !== '__local__';
+  document.getElementById('syncNotConnected').style.display = connected ? 'none' : 'block';
+  document.getElementById('syncConnected').style.display    = connected ? 'block' : 'none';
+  document.getElementById('syncModalErr').style.display     = 'none';
+  if (connected) {
+    document.getElementById('syncConnectedUrl').textContent = url;
+    document.getElementById('syncUrlDisplay').value = url;
+  }
+  document.getElementById('syncSettingsModal').classList.add('open');
+}
+
+async function connectFromModal() {
+  const url   = document.getElementById('syncApiUrlInput').value.trim();
+  const errEl = document.getElementById('syncModalErr');
+  errEl.style.display = 'none';
+  if (!url || !url.includes('script.google.com')) {
+    errEl.textContent = '⚠ Please paste a valid Apps Script /exec URL.';
+    errEl.style.display = 'block';
+    return;
+  }
+  const btn = event.target; btn.textContent = '⏳ Connecting…'; btn.disabled = true;
+  API_URL = url;
+  localStorage.setItem(API_STORAGE_KEY, url);
+  const ok = await apiLoad(false);
+  if (ok) {
+    startPolling();
+    openSyncSettings(); // refresh modal to show connected state
+    showToast('🟢 Connected!', 'Live sync active.');
+  } else {
+    errEl.textContent = '❌ Could not connect. Check the URL and deployment settings.';
+    errEl.style.display = 'block';
+    API_URL = '';
+    localStorage.removeItem(API_STORAGE_KEY);
+  }
+  btn.textContent = '🔗 Connect'; btn.disabled = false;
+}
+
+function copySyncUrl() {
+  const url = document.getElementById('syncUrlDisplay').value;
+  navigator.clipboard.writeText(url).then(() => showToast('📋 URL Copied!', 'Share this URL with your team.'));
+}
+
+function apiDisconnect() {
+  if (!confirm('Disconnect from live sync? The dashboard will work locally only.')) return;
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = null;
+  API_URL = '';
+  localStorage.removeItem(API_STORAGE_KEY);
+  setSyncState('ok', 'Local only');
+  closeModal('syncSettingsModal');
+  showToast('🔌 Disconnected', 'Live sync off.');
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
@@ -3652,24 +4141,22 @@ loadContracts();
 updateGithubBtn();
 refreshAll();
 
-// Google Sheets init — check if already configured
 (async function() {
-  const savedUrl = getGSUrl();
-  if (!savedUrl) {
-    // First time — show setup screen
+  const saved = localStorage.getItem(API_STORAGE_KEY) || '';
+  if (!saved) {
     document.getElementById('setupScreen').style.display = 'flex';
-  } else if (savedUrl === '__local__') {
-    // User chose local — just show local indicator
-    setSyncState('ok', 'Local only');
-  } else {
-    // Already configured — connect and load
-    GS_URL = savedUrl;
-    document.getElementById('setupUrlInput').value = savedUrl;
-    setSyncState('syncing', 'Connecting...');
-    await gsLoad();
+    return;
   }
+  if (saved === '__local__') {
+    setSyncState('ok', 'Local only');
+    return;
+  }
+  API_URL = saved;
+  setSyncState('syncing', 'Connecting…');
+  const ok = await apiLoad(false);
+  if (ok) startPolling();
+  else setSyncState('error', 'Sync failed — click 🔗 Live Sync to reconnect');
 })();
 </script>
-
 
 </body></html>
